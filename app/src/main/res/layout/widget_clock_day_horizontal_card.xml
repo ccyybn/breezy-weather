@@ -39,7 +39,7 @@
                     android:layout_marginEnd="@dimen/little_margin"
                     android:layout_marginTop="-2dp"
                     android:layout_marginBottom="-2dp"
-                    android:textSize="48dp"
+                    android:textSize="56dp"
                     style="@style/widget_text_clock"
                     tools:text="9:10"
                     tools:ignore="RelativeOverlap,RtlHardcoded,SpUsage" />

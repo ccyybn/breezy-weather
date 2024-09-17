@@ -46,6 +46,7 @@ class SnowImplementor(
         private val mViewWidth: Int,
         private val mViewHeight: Int,
         @field:ColorInt @param:ColorInt val color: Int,
+        val alpha: Float,
         val scale: Float
     ) {
         private var mCX = 0f
@@ -60,7 +61,7 @@ class SnowImplementor(
         init {
             mCanvasSize = (mViewWidth * mViewWidth + mViewHeight * mViewHeight).toDouble().pow(0.5).toInt()
             radius = (mCanvasSize * (0.005 + Random().nextDouble() * 0.007) * scale).toFloat()
-            speedY = (mCanvasSize / (1000.0 * (2.5 + Random().nextDouble())) * 3.0).toFloat()
+            speedY = (mCanvasSize / (1000.0 * (5 + Random().nextDouble())) * 3.0).toFloat()
             init(true)
         }
 
@@ -94,20 +95,22 @@ class SnowImplementor(
 
     init {
         val colors = if (daylight) intArrayOf(
-            Color.rgb(128, 197, 255),
-            Color.rgb(185, 222, 255),
+            Color.rgb(255, 255, 255),
+            Color.rgb(255, 255, 255),
             Color.rgb(255, 255, 255)
         ) else intArrayOf(
-            Color.rgb(40, 102, 155),
-            Color.rgb(99, 144, 182),
+            Color.rgb(255, 255, 255),
+            Color.rgb(255, 255, 255),
             Color.rgb(255, 255, 255)
         )
         val scales = floatArrayOf(0.6f, 0.8f, 1f)
-        mSnows = Array(SNOW_COUNT) { i->
+        val alphas = floatArrayOf(0.4f, 0.6f, 0.8f)
+        mSnows = Array(SNOW_COUNT) { i ->
             Snow(
                 canvasSizes[0],
                 canvasSizes[1],
                 colors[i * 3 / SNOW_COUNT],
+                alphas[i * 3 / SNOW_COUNT],
                 scales[i * 3 / SNOW_COUNT]
             )
         }
@@ -136,7 +139,7 @@ class SnowImplementor(
             )
             for (s in mSnows) {
                 mPaint.color = s.color
-                mPaint.alpha = ((1 - scrollRate) * 255).toInt()
+                mPaint.alpha = ((1 - scrollRate) * 255 * s.alpha).toInt()
                 canvas.drawCircle(s.centerX, s.centerY, s.radius, mPaint)
             }
         }

@@ -56,6 +56,7 @@ class RainImplementor(
         private val mViewWidth: Int,
         private val mViewHeight: Int,
         @ColorInt val color: Int,
+        val alpha: Float,
         val scale: Float
     ) {
         var x = 0f
@@ -102,10 +103,10 @@ class RainImplementor(
 
         fun move(interval: Long, deltaRotation3D: Float) {
             y += (speed * interval
-                * (scale.toDouble().pow(1.5)
-                - 5 * sin(deltaRotation3D * Math.PI / 180.0) * cos(8 * Math.PI / 180.0))).toFloat()
+                    * (scale.toDouble().pow(1.5)
+                    - 5 * sin(deltaRotation3D * Math.PI / 180.0) * cos(8 * Math.PI / 180.0))).toFloat()
             x -= (speed * interval
-                * 5 * sin(deltaRotation3D * Math.PI / 180.0) * sin(8 * Math.PI / 180.0)).toFloat()
+                    * 5 * sin(deltaRotation3D * Math.PI / 180.0) * sin(8 * Math.PI / 180.0)).toFloat()
             if (y >= mCanvasSize) {
                 init(false)
             } else {
@@ -167,16 +168,16 @@ class RainImplementor(
                 rainCount = RAIN_COUNT
                 mThunder = null
                 colors = intArrayOf(
-                    Color.rgb(223, 179, 114),
-                    Color.rgb(152, 175, 222),
+                    Color.rgb(255, 255, 255),
+                    Color.rgb(255, 255, 255),
                     Color.rgb(255, 255, 255)
                 )
             } else {
                 rainCount = RAIN_COUNT
                 mThunder = null
                 colors = intArrayOf(
-                    Color.rgb(182, 142, 82),
-                    Color.rgb(88, 92, 113),
+                    Color.rgb(255, 255, 255),
+                    Color.rgb(255, 255, 255),
                     Color.rgb(255, 255, 255)
                 )
             }
@@ -185,16 +186,16 @@ class RainImplementor(
                 rainCount = RAIN_COUNT
                 mThunder = Thunder()
                 colors = intArrayOf(
-                    Color.rgb(182, 142, 82),
-                    -0x93aa6e,
+                    Color.rgb(255, 255, 255),
+                    Color.rgb(255, 255, 255),
                     Color.rgb(255, 255, 255)
                 )
             } else {
                 rainCount = RAIN_COUNT
                 mThunder = Thunder()
                 colors = intArrayOf(
-                    Color.rgb(182, 142, 82),
-                    Color.rgb(88, 92, 113),
+                    Color.rgb(255, 255, 255),
+                    Color.rgb(255, 255, 255),
                     Color.rgb(255, 255, 255)
                 )
             }
@@ -203,26 +204,32 @@ class RainImplementor(
                 rainCount = SLEET_COUNT
                 mThunder = null
                 colors = intArrayOf(
-                    Color.rgb(128, 197, 255),
-                    Color.rgb(185, 222, 255),
+                    Color.rgb(255, 255, 255),
+                    Color.rgb(255, 255, 255),
                     Color.rgb(255, 255, 255)
                 )
             } else {
                 rainCount = SLEET_COUNT
                 mThunder = null
                 colors = intArrayOf(
-                    Color.rgb(40, 102, 155),
-                    Color.rgb(99, 144, 182),
+                    Color.rgb(255, 255, 255),
+                    Color.rgb(255, 255, 255),
                     Color.rgb(255, 255, 255)
                 )
             }
         }
         val scales = floatArrayOf(0.6f, 0.8f, 1f)
+        val alphas = if (type == TYPE_SLEET) {
+            floatArrayOf(1f, 0.35f, 0.5f)
+        } else {
+            floatArrayOf(0.2f, 0.35f, 0.5f)
+        }
         mRains = Array(rainCount) { i ->
             Rain(
                 canvasSizes[0],
                 canvasSizes[1],
                 colors[i * 3 / rainCount],
+                alphas[i * 3 / rainCount],
                 scales[i * 3 / rainCount]
             )
         }
@@ -260,13 +267,13 @@ class RainImplementor(
             )
             for (r in mRains) {
                 mPaint.color = r.color
-                mPaint.alpha = ((1 - scrollRate) * 255).toInt()
+                mPaint.alpha = ((1 - scrollRate) * 255 * r.alpha).toInt()
                 canvas.drawRoundRect(r.rectF, r.width / 2f, r.width / 2f, mPaint)
             }
             mThunder?.let {
                 canvas.drawColor(
                     Color.argb(
-                        ((1 - scrollRate) * it.alpha * 255 * 0.66).toInt(),
+                        ((1 - scrollRate) * it.alpha * 255 * 1).toInt(),
                         it.r,
                         it.g,
                         it.b
@@ -283,6 +290,7 @@ class RainImplementor(
         const val TYPE_SLEET = 4
         private const val RAIN_COUNT = 75
         private const val SLEET_COUNT = 45
+
         @ColorInt
         fun getThemeColor(context: Context, @TypeRule type: Int, daylight: Boolean): Int {
             when (type) {

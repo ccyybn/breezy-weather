@@ -124,7 +124,8 @@ class ArcProgress @JvmOverloads constructor(
         }
         mShaderColors = intArrayOf(Color.BLACK, Color.WHITE)
         mShaderWrapper = DayNightShaderWrapper(
-            measuredWidth, measuredHeight, lightTheme = true, mShaderColors)
+            measuredWidth, measuredHeight, lightTheme = true, mShaderColors
+        )
     }
 
     var progress: Float
@@ -283,9 +284,18 @@ class ArcProgress @JvmOverloads constructor(
         if (!mBottomText.isNullOrEmpty()) {
             mBottomTextPaint.color = mBottomTextColor
             mBottomTextPaint.textSize = mBottomTextSize
+
             val bottomTextBaseline = (height
-                + (mBottomTextPaint.descent() + mBottomTextPaint.ascent()) / 2
-                - mProgressWidth * 0.33f)
+                    + (mBottomTextPaint.descent() + mBottomTextPaint.ascent()) / 2
+                    - mProgressWidth * 0.1f)
+
+//            val paint = Paint()
+//            paint.color = mProgressColor
+//            paint.style = Paint.Style.FILL
+//            val length = mBottomTextPaint.measureText(mBottomText)
+//            val rectLeft = (width - length) / 2.0f
+//            val margin = mBottomTextSize / 2
+//            canvas.drawRect(rectLeft - margin, bottomTextBaseline - mBottomTextSize - margin / 2, rectLeft + length + margin, bottomTextBaseline + margin, paint)
             canvas.drawText(
                 mBottomText!!,
                 (width - mBottomTextPaint.measureText(mBottomText)) / 2.0f,
