@@ -302,8 +302,8 @@ class CloudImplementor(
                         Color.rgb(160, 179, 191),
                         Color.rgb(160, 179, 191)
                     ) else intArrayOf(
-                        Color.rgb(95, 104, 108),
-                        Color.rgb(95, 104, 108)
+                        Color.rgb(95, 95, 108),
+                        Color.rgb(95, 95, 108)
                     )
                     cloudAlphas = floatArrayOf(0.3f, 0.3f)
                 }
@@ -386,7 +386,7 @@ class CloudImplementor(
             initialize(clouds)
         } else {
             val cloudColor = if (daylight) {
-                Color.rgb(203, 245, 255)
+                Color.rgb(255, 255, 255)
             } else {
                 Color.rgb(151, 168, 202)
             }
@@ -562,7 +562,7 @@ class CloudImplementor(
         fun getThemeColor(context: Context, @TypeRule type: Int, daylight: Boolean): Int {
             when (type) {
                 TYPE_CLOUDY -> return if (daylight) -0x62503f else -0xd9cdc8
-                TYPE_CLOUD -> return if (daylight) -0xff5a27 else -0xddd2bd
+                TYPE_CLOUD -> return if (daylight) Color.rgb(95, 166, 222) else -0xddd2bd
                 TYPE_THUNDER -> return if (daylight) -0x4d6943 else -0xdce8c7
                 TYPE_FOG -> return if (daylight) -0x5c513e else -0xb0a298
                 TYPE_HAZE -> return if (daylight) -0x1e3767 else -0x93a3b7

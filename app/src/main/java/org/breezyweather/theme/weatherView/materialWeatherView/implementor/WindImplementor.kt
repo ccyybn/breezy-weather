@@ -46,6 +46,7 @@ class WindImplementor(
         private val mViewWidth: Int,
         private val mViewHeight: Int,
         @ColorInt val color: Int,
+        val alpha: Float,
         val scale: Float
     ) {
         var x = 0f
@@ -63,7 +64,7 @@ class WindImplementor(
 
         init {
             mCanvasSize = (mViewWidth * mViewWidth + mViewHeight * mViewHeight).toDouble().pow(0.5).toInt()
-            speed = (mCanvasSize / (1000.0 * (0.5 + Random().nextDouble())) * 6.0).toFloat()
+            speed = (mCanvasSize / (1000.0 * (2.5 + Random().nextDouble())) * 6.0).toFloat()
             MAX_HEIGHT = 0.007f * mCanvasSize
             MIN_HEIGHT = 0.005f * mCanvasSize
             MAX_WIDTH = MAX_HEIGHT * 10
@@ -92,10 +93,10 @@ class WindImplementor(
 
         fun move(interval: Long, deltaRotation3D: Float) {
             x += (speed * interval
-                * (scale.toDouble().pow(1.5)
-                + 5 * sin(deltaRotation3D * Math.PI / 180.0) * cos(16 * Math.PI / 180.0))).toFloat()
+                    * (scale.toDouble().pow(1.5)
+                    + 5 * sin(deltaRotation3D * Math.PI / 180.0) * cos(16 * Math.PI / 180.0))).toFloat()
             y -= (speed * interval
-                * 5 * sin(deltaRotation3D * Math.PI / 180.0) * sin(16 * Math.PI / 180.0)).toFloat()
+                    * 5 * sin(deltaRotation3D * Math.PI / 180.0) * sin(16 * Math.PI / 180.0)).toFloat()
             if (x >= mCanvasSize) {
                 init(false)
             } else {
@@ -106,20 +107,22 @@ class WindImplementor(
 
     init {
         val colors = if (daylight) intArrayOf(
-            Color.rgb(240, 200, 148),
-            Color.rgb(237, 178, 100),
+            Color.rgb(209, 142, 54),
+            Color.rgb(209, 142, 54),
             Color.rgb(209, 142, 54)
         ) else intArrayOf(
-            Color.rgb(240, 200, 148),
-            Color.rgb(237, 178, 100),
+            Color.rgb(209, 142, 54),
+            Color.rgb(209, 142, 54),
             Color.rgb(209, 142, 54)
         )
-        val scales = floatArrayOf(0.6f, 0.8f, 1f)
+        val scales = floatArrayOf(0.4f, 0.5f, 0.6f)
+        val alphas = floatArrayOf(0.5f, 0.6f, 0.8f)
         mWinds = Array(WIND_COUNT) { i ->
             Wind(
                 canvasSizes[0],
                 canvasSizes[1],
                 colors[i * 3 / WIND_COUNT],
+                alphas[i * 3 / WIND_COUNT],
                 scales[i * 3 / WIND_COUNT]
             )
         }
@@ -155,7 +158,7 @@ class WindImplementor(
             )
             for (w in mWinds) {
                 mPaint.color = w.color
-                mPaint.alpha = ((1 - scrollRate) * 255).toInt()
+                mPaint.alpha = ((1 - scrollRate) * 255 * w.alpha).toInt()
                 canvas.drawRect(w.rectF, mPaint)
             }
         }
@@ -163,7 +166,8 @@ class WindImplementor(
 
     companion object {
         private const val INITIAL_ROTATION_3D = 1000f
-        private const val WIND_COUNT = 160
+        private const val WIND_COUNT = 120
+
         @ColorInt
         fun getThemeColor(daylight: Boolean): Int {
             return if (daylight) -0x15325d else -0x6a798b

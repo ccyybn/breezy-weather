@@ -47,6 +47,7 @@ class HailImplementor(
         private val mViewWidth: Int,
         private val mViewHeight: Int,
         @field:ColorInt @param:ColorInt val color: Int,
+        val alpha: Float,
         val scale: Float
     ) {
         var cx = 0f
@@ -103,22 +104,25 @@ class HailImplementor(
     init {
         val colors: IntArray = if (daylight) {
             intArrayOf(
-                Color.rgb(128, 197, 255),
-                Color.rgb(185, 222, 255),
+                Color.rgb(255, 255, 255),
+                Color.rgb(255, 255, 255),
                 Color.rgb(255, 255, 255)
             )
         } else {
             intArrayOf(
-                Color.rgb(40, 102, 155),
-                Color.rgb(99, 144, 182),
+                Color.rgb(255, 255, 255),
+                Color.rgb(255, 255, 255),
                 Color.rgb(255, 255, 255)
             )
         }
         val scales = floatArrayOf(0.6f, 0.8f, 1f)
+        val alphas = floatArrayOf(0.4f, 0.6f, 0.8f)
         mHails = Array(HAIL_COUNT) { i ->
             Hail(
                 canvasSizes[0], canvasSizes[1],
-                colors[i * 3 / HAIL_COUNT], scales[i * 3 / HAIL_COUNT]
+                colors[i * 3 / HAIL_COUNT],
+                alphas[i * 3 / HAIL_COUNT],
+                scales[i * 3 / HAIL_COUNT]
             )
         }
         mLastRotation3D = INITIAL_ROTATION_3D
@@ -146,7 +150,7 @@ class HailImplementor(
             )
             for (h in mHails) {
                 mPaint.color = h.color
-                mPaint.alpha = ((1 - scrollRate) * 255).toInt()
+                mPaint.alpha = ((1 - scrollRate) * 255 * h.alpha).toInt()
                 canvas.rotate(h.rotation, h.cx, h.cy)
                 canvas.drawRect(h.rectF, mPaint)
                 canvas.rotate(-h.rotation, h.cx, h.cy)
@@ -157,6 +161,7 @@ class HailImplementor(
     companion object {
         private const val INITIAL_ROTATION_3D = 1000f
         private const val HAIL_COUNT = 51
+
         @ColorInt
         fun getThemeColor(daylight: Boolean): Int {
             return if (daylight) -0x974501 else -0xe5a46e
