@@ -35,7 +35,7 @@ class SunImplementor(
     private val mPaint = Paint().apply {
         style = Paint.Style.FILL
         isAntiAlias = true
-        color = Color.rgb(253, 84, 17)
+        color = Color.rgb(255, 255, 255)
     }
     private val mAngles = FloatArray(3)
     private val mUnitSizes: FloatArray = floatArrayOf(
@@ -106,6 +106,6 @@ class SunImplementor(
     companion object {
         @get:ColorInt
         val themeColor: Int
-            get() = Color.rgb(253, 188, 76)
+            get() = Color.rgb(71, 155, 222)
     }
 }
