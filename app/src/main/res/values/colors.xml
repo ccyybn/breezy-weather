@@ -47,7 +47,7 @@
     <color name="pollenRecosanteLevel_5">#d94049</color>
 
     <!-- Start color of the weather_background_clear_day -->
-    <color name="sunshine">#fdbc4c</color>
+    <color name="sunshine">#2196F3</color>
 
     <!-- theme. -->
 
@@ -73,7 +73,7 @@
     <color name="colorWidgetM3Root">@color/md_theme_surface</color>
     <color name="colorWidgetM3TextPrimary">@color/material_grey_800</color>
     <color name="colorWidgetM3TextSecondary">@color/md_theme_onSurface</color>
-    <color name="colorWidgetTextShadow">#99000000</color>
+    <color name="colorWidgetTextShadow">#00000000</color>
 
     <!-- material 3. -->
 

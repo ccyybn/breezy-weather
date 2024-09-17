@@ -140,7 +140,7 @@ object ClockDayDetailsWidgetIMP : AbstractRemoteViewsPresenter() {
             } else ""
         )
         val builder = StringBuilder()
-        builder.append(location.getPlace(context))
+        builder.append(weather.current?.weatherText)
         weather.current?.temperature?.temperature?.let {
             builder.append(" ").append(
                 temperatureUnit.getValueText(context, it, 0)

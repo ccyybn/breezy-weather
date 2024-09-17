@@ -94,7 +94,7 @@ class DailyAirQualityAdapter(
                 MainThemeColorProvider.getColor(location, R.attr.colorBodyText),
                 MainThemeColorProvider.getColor(location, R.attr.colorTitleText)
             )
-            mPolylineAndHistogramView.setHistogramAlpha(if (lightTheme) 1f else 0.5f)
+            mPolylineAndHistogramView.setHistogramAlpha(if (lightTheme) 1f else 0.9f)
             dailyItem.contentDescription = talkBackBuilder.toString()
         }
     }

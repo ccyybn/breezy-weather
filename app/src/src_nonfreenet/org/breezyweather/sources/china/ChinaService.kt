@@ -45,12 +45,12 @@ class ChinaService @Inject constructor(
     LocationSearchSource, ReverseGeocodingSource, LocationParametersSource {
 
     override val id = "china"
-    override val name = "中国"
+    override val name = "China"
     override val privacyPolicyUrl = "https://privacy.mi.com/all/zh_CN"
 
-    override val color = Color.rgb(255, 105, 0)
-    override val weatherAttribution = "北京天气、彩云天气、中国环境监测总站"
-    override val locationSearchAttribution = "北京天气、彩云天气、中国环境监测总站"
+    override val color = Color.rgb(24, 106, 194)
+    override val weatherAttribution = "China"
+    override val locationSearchAttribution = "China"
 
     private val mApi by lazy {
         client

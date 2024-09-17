@@ -302,8 +302,8 @@ class CloudImplementor(
                         Color.rgb(160, 179, 191),
                         Color.rgb(160, 179, 191)
                     ) else intArrayOf(
-                        Color.rgb(95, 104, 108),
-                        Color.rgb(95, 104, 108)
+                        Color.rgb(95, 95, 108),
+                        Color.rgb(95, 95, 108)
                     )
                     cloudAlphas = floatArrayOf(0.3f, 0.3f)
                 }
@@ -386,7 +386,7 @@ class CloudImplementor(
             initialize(clouds)
         } else {
             val cloudColor = if (daylight) {
-                Color.rgb(203, 245, 255)
+                Color.rgb(255, 255, 255)
             } else {
                 Color.rgb(151, 168, 202)
             }
