@@ -94,6 +94,43 @@ object WeatherImplementorFactory {
                 sizes,
                 animate,
                 RainImplementor.TYPE_RAIN,
+                WeatherView.WEATHER_KIND_RAINY,
+                daytime
+            )
+
+        WeatherView.WEATHER_KIND_LIGHT_RAIN ->
+            RainImplementor(
+                sizes,
+                animate,
+                RainImplementor.TYPE_RAIN,
+                WeatherView.WEATHER_KIND_LIGHT_RAIN,
+                daytime
+            )
+
+        WeatherView.WEATHER_KIND_MODERATE_RAIN ->
+            RainImplementor(
+                sizes,
+                animate,
+                RainImplementor.TYPE_RAIN,
+                WeatherView.WEATHER_KIND_MODERATE_RAIN,
+                daytime
+            )
+
+        WeatherView.WEATHER_KIND_HEAVY_RAIN ->
+            RainImplementor(
+                sizes,
+                animate,
+                RainImplementor.TYPE_RAIN,
+                WeatherView.WEATHER_KIND_HEAVY_RAIN,
+                daytime
+            )
+
+        WeatherView.WEATHER_KIND_RAINSTORM ->
+            RainImplementor(
+                sizes,
+                animate,
+                RainImplementor.TYPE_RAIN,
+                WeatherView.WEATHER_KIND_RAINSTORM,
                 daytime
             )
 
@@ -101,6 +138,39 @@ object WeatherImplementorFactory {
             SnowImplementor(
                 sizes,
                 animate,
+                WeatherView.WEATHER_KIND_SNOW,
+                daytime
+            )
+
+        WeatherView.WEATHER_KIND_LIGHT_SNOW ->
+            SnowImplementor(
+                sizes,
+                animate,
+                WeatherView.WEATHER_KIND_LIGHT_SNOW,
+                daytime
+            )
+
+        WeatherView.WEATHER_KIND_MODERATE_SNOW ->
+            SnowImplementor(
+                sizes,
+                animate,
+                WeatherView.WEATHER_KIND_MODERATE_SNOW,
+                daytime
+            )
+
+        WeatherView.WEATHER_KIND_HEAVY_SNOW ->
+            SnowImplementor(
+                sizes,
+                animate,
+                WeatherView.WEATHER_KIND_HEAVY_SNOW,
+                daytime
+            )
+
+        WeatherView.WEATHER_KIND_SNOWSTORM ->
+            SnowImplementor(
+                sizes,
+                animate,
+                WeatherView.WEATHER_KIND_SNOWSTORM,
                 daytime
             )
 
@@ -109,6 +179,7 @@ object WeatherImplementorFactory {
                 sizes,
                 animate,
                 RainImplementor.TYPE_THUNDERSTORM,
+                WeatherView.WEATHER_KIND_THUNDERSTORM,
                 daytime
             )
 
@@ -132,6 +203,7 @@ object WeatherImplementorFactory {
                 sizes,
                 animate,
                 RainImplementor.TYPE_SLEET,
+                WeatherView.WEATHER_KIND_SLEET,
                 daytime
             )
 
@@ -185,6 +257,30 @@ object WeatherImplementorFactory {
             R.drawable.weather_background_rain_night
         }
 
+        WeatherView.WEATHER_KIND_LIGHT_RAIN -> if (daylight) {
+            R.drawable.weather_background_rain_day
+        } else {
+            R.drawable.weather_background_rain_night
+        }
+
+        WeatherView.WEATHER_KIND_MODERATE_RAIN -> if (daylight) {
+            R.drawable.weather_background_rain_day
+        } else {
+            R.drawable.weather_background_rain_night
+        }
+
+        WeatherView.WEATHER_KIND_HEAVY_RAIN -> if (daylight) {
+            R.drawable.weather_background_rain_day
+        } else {
+            R.drawable.weather_background_rain_night
+        }
+
+        WeatherView.WEATHER_KIND_RAINSTORM -> if (daylight) {
+            R.drawable.weather_background_rain_day
+        } else {
+            R.drawable.weather_background_rain_night
+        }
+
         WeatherView.WEATHER_KIND_SLEET -> if (daylight) {
             R.drawable.weather_background_sleet_day
         } else {
@@ -192,6 +288,30 @@ object WeatherImplementorFactory {
         }
 
         WeatherView.WEATHER_KIND_SNOW -> if (daylight) {
+            R.drawable.weather_background_snow_day
+        } else {
+            R.drawable.weather_background_snow_night
+        }
+
+        WeatherView.WEATHER_KIND_LIGHT_SNOW -> if (daylight) {
+            R.drawable.weather_background_snow_day
+        } else {
+            R.drawable.weather_background_snow_night
+        }
+
+        WeatherView.WEATHER_KIND_MODERATE_SNOW -> if (daylight) {
+            R.drawable.weather_background_snow_day
+        } else {
+            R.drawable.weather_background_snow_night
+        }
+
+        WeatherView.WEATHER_KIND_HEAVY_SNOW -> if (daylight) {
+            R.drawable.weather_background_snow_day
+        } else {
+            R.drawable.weather_background_snow_night
+        }
+
+        WeatherView.WEATHER_KIND_SNOWSTORM -> if (daylight) {
             R.drawable.weather_background_snow_day
         } else {
             R.drawable.weather_background_snow_night

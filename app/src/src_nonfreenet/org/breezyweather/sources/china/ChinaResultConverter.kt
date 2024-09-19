@@ -191,7 +191,8 @@ private fun getDailyList(
 
 private fun getPrecipitationProbability(forecast: ChinaForecastDaily, index: Int): Double? {
     if (forecast.precipitationProbability == null ||
-        forecast.precipitationProbability.value.isNullOrEmpty()) {
+        forecast.precipitationProbability.value.isNullOrEmpty()
+    ) {
         return null
     }
 
@@ -347,11 +348,19 @@ private fun getWeatherCode(icon: String?): WeatherCode? {
     } else when (icon) {
         "0", "00" -> WeatherCode.CLEAR
         "1", "01" -> WeatherCode.PARTLY_CLOUDY
-        "3", "7", "8", "9", "03", "07", "08", "09", "10", "11", "12", "21", "22", "23", "24", "25" -> WeatherCode.RAIN
+        "3", "03" -> WeatherCode.SHOWERY_RAIN
+        "7", "07" -> WeatherCode.LIGHT_RAIN
+        "8", "08", "21" -> WeatherCode.MODERATE_RAIN
+        "9", "09", "22" -> WeatherCode.HEAVY_RAIN
+        "10", "11", "12", "23", "24", "25" -> WeatherCode.RAINSTORM
         "4", "04" -> WeatherCode.THUNDERSTORM
         "5", "05" -> WeatherCode.HAIL
         "6", "06", "19" -> WeatherCode.SLEET
-        "13", "14", "15", "16", "17", "26", "27", "28" -> WeatherCode.SNOW
+        "13" -> WeatherCode.SHOWERY_SNOW
+        "14" -> WeatherCode.LIGHT_SNOW
+        "15", "26" -> WeatherCode.MODERATE_SNOW
+        "16", "27" -> WeatherCode.HEAVY_SNOW
+        "17", "28" -> WeatherCode.SNOWSTORM
         "18", "32", "49", "57" -> WeatherCode.FOG
         "20", "29", "30" -> WeatherCode.WIND
         "53", "54", "55", "56" -> WeatherCode.HAZE

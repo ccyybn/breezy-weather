@@ -26,6 +26,7 @@ import androidx.annotation.IntDef
 import androidx.annotation.Size
 import androidx.core.content.ContextCompat
 import org.breezyweather.R
+import org.breezyweather.theme.weatherView.WeatherView
 import org.breezyweather.theme.weatherView.materialWeatherView.MaterialWeatherView.WeatherAnimationImplementor
 import java.util.Random
 import kotlin.math.cos
@@ -39,6 +40,7 @@ class RainImplementor(
     @Size(2) canvasSizes: IntArray,
     animate: Boolean,
     @TypeRule type: Int,
+    mType: Int,
     daylight: Boolean
 ) : WeatherAnimationImplementor() {
     private val mAnimate = animate
@@ -162,10 +164,15 @@ class RainImplementor(
 
     init {
         var colors = IntArray(3)
-        var rainCount = RAIN_COUNT
+        var rainCount = when (mType) {
+            WeatherView.WEATHER_KIND_LIGHT_RAIN -> 35
+            WeatherView.WEATHER_KIND_MODERATE_RAIN -> 150
+            WeatherView.WEATHER_KIND_HEAVY_RAIN -> 250
+            WeatherView.WEATHER_KIND_RAINSTORM -> 400
+            else -> 75
+        }
         when (type) {
             TYPE_RAIN -> if (daylight) {
-                rainCount = RAIN_COUNT
                 mThunder = null
                 colors = intArrayOf(
                     Color.rgb(255, 255, 255),
@@ -173,7 +180,6 @@ class RainImplementor(
                     Color.rgb(255, 255, 255)
                 )
             } else {
-                rainCount = RAIN_COUNT
                 mThunder = null
                 colors = intArrayOf(
                     Color.rgb(255, 255, 255),
@@ -183,7 +189,6 @@ class RainImplementor(
             }
 
             TYPE_THUNDERSTORM -> if (daylight) {
-                rainCount = RAIN_COUNT
                 mThunder = Thunder()
                 colors = intArrayOf(
                     Color.rgb(255, 255, 255),
@@ -191,7 +196,6 @@ class RainImplementor(
                     Color.rgb(255, 255, 255)
                 )
             } else {
-                rainCount = RAIN_COUNT
                 mThunder = Thunder()
                 colors = intArrayOf(
                     Color.rgb(255, 255, 255),
@@ -288,7 +292,6 @@ class RainImplementor(
         const val TYPE_RAIN = 1
         const val TYPE_THUNDERSTORM = 3
         const val TYPE_SLEET = 4
-        private const val RAIN_COUNT = 75
         private const val SLEET_COUNT = 45
 
         @ColorInt
