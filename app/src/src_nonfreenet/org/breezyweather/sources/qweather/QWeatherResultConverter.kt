@@ -421,42 +421,42 @@ fun getWeatherCode(icon: String?): WeatherCode? {
         "151" -> WeatherCode.PARTLY_CLOUDY
         "152" -> WeatherCode.PARTLY_CLOUDY
         "153" -> WeatherCode.PARTLY_CLOUDY
-        "300" -> WeatherCode.RAIN
-        "301" -> WeatherCode.RAIN
+        "300" -> WeatherCode.SHOWERY_RAIN
+        "301" -> WeatherCode.SHOWERY_RAIN
         "302" -> WeatherCode.THUNDERSTORM
         "303" -> WeatherCode.THUNDERSTORM
         "304" -> WeatherCode.HAIL
-        "305" -> WeatherCode.RAIN
-        "306" -> WeatherCode.RAIN
-        "307" -> WeatherCode.RAIN
-        "308" -> WeatherCode.RAIN
-        "309" -> WeatherCode.RAIN
-        "310" -> WeatherCode.RAIN
-        "311" -> WeatherCode.RAIN
-        "312" -> WeatherCode.RAIN
+        "305" -> WeatherCode.LIGHT_RAIN
+        "306" -> WeatherCode.MODERATE_RAIN
+        "307" -> WeatherCode.HEAVY_RAIN
+        "308" -> WeatherCode.RAINSTORM
+        "309" -> WeatherCode.LIGHT_RAIN
+        "310" -> WeatherCode.RAINSTORM
+        "311" -> WeatherCode.RAINSTORM
+        "312" -> WeatherCode.RAINSTORM
         "313" -> WeatherCode.SLEET
-        "314" -> WeatherCode.RAIN
-        "315" -> WeatherCode.RAIN
-        "316" -> WeatherCode.RAIN
-        "317" -> WeatherCode.RAIN
-        "318" -> WeatherCode.RAIN
-        "350" -> WeatherCode.RAIN
-        "351" -> WeatherCode.RAIN
-        "399" -> WeatherCode.RAIN
-        "400" -> WeatherCode.SNOW
-        "401" -> WeatherCode.SNOW
-        "402" -> WeatherCode.SNOW
-        "403" -> WeatherCode.SNOW
+        "314" -> WeatherCode.MODERATE_RAIN
+        "315" -> WeatherCode.HEAVY_RAIN
+        "316" -> WeatherCode.RAINSTORM
+        "317" -> WeatherCode.RAINSTORM
+        "318" -> WeatherCode.RAINSTORM
+        "350" -> WeatherCode.SHOWERY_RAIN
+        "351" -> WeatherCode.SHOWERY_RAIN
+        "399" -> WeatherCode.MODERATE_RAIN
+        "400" -> WeatherCode.LIGHT_SNOW
+        "401" -> WeatherCode.MODERATE_SNOW
+        "402" -> WeatherCode.HEAVY_SNOW
+        "403" -> WeatherCode.SNOWSTORM
         "404" -> WeatherCode.SLEET
         "405" -> WeatherCode.SLEET
         "406" -> WeatherCode.SLEET
-        "407" -> WeatherCode.SNOW
-        "408" -> WeatherCode.SNOW
-        "409" -> WeatherCode.SNOW
-        "410" -> WeatherCode.SNOW
+        "407" -> WeatherCode.SHOWERY_SNOW
+        "408" -> WeatherCode.MODERATE_SNOW
+        "409" -> WeatherCode.HEAVY_SNOW
+        "410" -> WeatherCode.SNOWSTORM
         "456" -> WeatherCode.SLEET
-        "457" -> WeatherCode.SNOW
-        "499" -> WeatherCode.SNOW
+        "457" -> WeatherCode.SHOWERY_SNOW
+        "499" -> WeatherCode.MODERATE_SNOW
         "500" -> WeatherCode.FOG
         "501" -> WeatherCode.FOG
         "502" -> WeatherCode.HAZE

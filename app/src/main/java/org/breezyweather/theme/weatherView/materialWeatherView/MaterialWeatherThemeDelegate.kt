@@ -70,13 +70,13 @@ class MaterialWeatherThemeDelegate : WeatherThemeDelegate {
             WeatherView.WEATHER_KIND_HAZE ->
                 CloudImplementor.getThemeColor(context, CloudImplementor.TYPE_HAZE, daytime)
 
-            WeatherView.WEATHER_KIND_RAINY ->
+            WeatherView.WEATHER_KIND_RAINY, WeatherView.WEATHER_KIND_LIGHT_RAIN, WeatherView.WEATHER_KIND_MODERATE_RAIN, WeatherView.WEATHER_KIND_HEAVY_RAIN, WeatherView.WEATHER_KIND_RAINSTORM ->
                 RainImplementor.getThemeColor(context, RainImplementor.TYPE_RAIN, daytime)
 
             WeatherView.WEATHER_KIND_SLEET ->
                 RainImplementor.getThemeColor(context, RainImplementor.TYPE_SLEET, daytime)
 
-            WeatherView.WEATHER_KIND_SNOW ->
+            WeatherView.WEATHER_KIND_SNOW, WeatherView.WEATHER_KIND_LIGHT_SNOW, WeatherView.WEATHER_KIND_MODERATE_SNOW, WeatherView.WEATHER_KIND_HEAVY_SNOW, WeatherView.WEATHER_KIND_SNOWSTORM ->
                 SnowImplementor.getThemeColor(daytime)
 
             WeatherView.WEATHER_KIND_THUNDERSTORM ->
@@ -119,8 +119,8 @@ class MaterialWeatherThemeDelegate : WeatherThemeDelegate {
     }
 
     override fun getHeaderTopMargin(context: Context): Int = (
-        context.resources.displayMetrics.heightPixels * 0.25 // 0.66
-    ).toInt()
+            context.resources.displayMetrics.heightPixels * 0.25 // 0.66
+            ).toInt()
 
     override fun getHeaderTextColor(context: Context): Int {
         return Color.WHITE

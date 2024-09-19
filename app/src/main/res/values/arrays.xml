@@ -190,7 +190,15 @@
         <item>@string/weather_kind_partly_cloudy</item>
         <item>@string/weather_kind_cloudy</item>
         <item>@string/weather_kind_rain</item>
+        <item>@string/weather_kind_light_rain</item>
+        <item>@string/weather_kind_moderate_rain</item>
+        <item>@string/weather_kind_heavy_rain</item>
+        <item>@string/weather_kind_rainstorm</item>
         <item>@string/weather_kind_snow</item>
+        <item>@string/weather_kind_light_snow</item>
+        <item>@string/weather_kind_moderate_snow</item>
+        <item>@string/weather_kind_heavy_snow</item>
+        <item>@string/weather_kind_snowstorm</item>
         <item>@string/weather_kind_sleet</item>
         <item>@string/weather_kind_hail</item>
         <item>@string/weather_kind_fog</item>
@@ -205,7 +213,15 @@
         <item>PARTLY_CLOUDY</item>
         <item>CLOUDY</item>
         <item>RAIN</item>
+        <item>LIGHT_RAIN</item>
+        <item>MODERATE_RAIN</item>
+        <item>HEAVY_RAIN</item>
+        <item>RAINSTORM</item>
         <item>SNOW</item>
+        <item>LIGHT_SNOW</item>
+        <item>MODERATE_SNOW</item>
+        <item>HEAVY_SNOW</item>
+        <item>SNOWSTORM</item>
         <item>SLEET</item>
         <item>HAIL</item>
         <item>FOG</item>
