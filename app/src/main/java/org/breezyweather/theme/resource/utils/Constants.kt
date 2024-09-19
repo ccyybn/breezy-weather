@@ -39,7 +39,17 @@ object Constants {
     private const val RESOURCES_PARTLY_CLOUDY = "weather_partly_cloudy"
     private const val RESOURCES_CLOUDY = "weather_cloudy"
     private const val RESOURCES_RAIN = "weather_rain"
+    private const val RESOURCES_SHOWERY_RAIN = "weather_showery_rain"
+    private const val RESOURCES_LIGHT_RAIN = "weather_light_rain"
+    private const val RESOURCES_MODERATE_RAIN = "weather_moderate_rain"
+    private const val RESOURCES_HEAVY_RAIN = "weather_heavy_rain"
+    private const val RESOURCES_RAINSTORM = "weather_rainstorm"
     private const val RESOURCES_SNOW = "weather_snow"
+    private const val RESOURCES_SHOWERY_SNOW = "weather_showery_snow"
+    private const val RESOURCES_LIGHT_SNOW = "weather_light_snow"
+    private const val RESOURCES_MODERATE_SNOW = "weather_moderate_snow"
+    private const val RESOURCES_HEAVY_SNOW = "weather_heavy_snow"
+    private const val RESOURCES_SNOWSTORM = "weather_snowstorm"
     private const val RESOURCES_WIND = "weather_wind"
     private const val RESOURCES_FOG = "weather_fog"
     private const val RESOURCES_HAZE = "weather_haze"
@@ -55,7 +65,17 @@ object Constants {
     private const val SHORTCUTS_PARTLY_CLOUDY = "shortcuts_partly_cloudy"
     private const val SHORTCUTS_CLOUDY = "shortcuts_cloudy"
     private const val SHORTCUTS_RAIN = "shortcuts_rain"
+    private const val SHORTCUTS_SHOWERY_RAIN = "shortcuts_showery_rain"
+    private const val SHORTCUTS_LIGHT_RAIN = "shortcuts_light_rain"
+    private const val SHORTCUTS_MODERATE_RAIN = "shortcuts_moderate_rain"
+    private const val SHORTCUTS_HEAVY_RAIN = "shortcuts_heavy_rain"
+    private const val SHORTCUTS_RAINSTORM = "shortcuts_rainstorm"
     private const val SHORTCUTS_SNOW = "shortcuts_snow"
+    private const val SHORTCUTS_SHOWERY_SNOW = "shortcuts_showery_snow"
+    private const val SHORTCUTS_LIGHT_SNOW = "shortcuts_light_snow"
+    private const val SHORTCUTS_MODERATE_SNOW = "shortcuts_moderate_snow"
+    private const val SHORTCUTS_HEAVY_SNOW = "shortcuts_heavy_snow"
+    private const val SHORTCUTS_SNOWSTORM = "shortcuts_snowstorm"
     private const val SHORTCUTS_WIND = "shortcuts_wind"
     private const val SHORTCUTS_FOG = "shortcuts_fog"
     private const val SHORTCUTS_HAZE = "shortcuts_haze"
@@ -88,7 +108,17 @@ object Constants {
         WeatherCode.PARTLY_CLOUDY -> RESOURCES_PARTLY_CLOUDY
         WeatherCode.CLOUDY -> RESOURCES_CLOUDY
         WeatherCode.RAIN -> RESOURCES_RAIN
+        WeatherCode.SHOWERY_RAIN -> RESOURCES_SHOWERY_RAIN
+        WeatherCode.LIGHT_RAIN -> RESOURCES_LIGHT_RAIN
+        WeatherCode.MODERATE_RAIN -> RESOURCES_MODERATE_RAIN
+        WeatherCode.HEAVY_RAIN -> RESOURCES_HEAVY_RAIN
+        WeatherCode.RAINSTORM -> RESOURCES_RAINSTORM
         WeatherCode.SNOW -> RESOURCES_SNOW
+        WeatherCode.SHOWERY_SNOW -> RESOURCES_SHOWERY_SNOW
+        WeatherCode.LIGHT_SNOW -> RESOURCES_LIGHT_SNOW
+        WeatherCode.MODERATE_SNOW -> RESOURCES_MODERATE_SNOW
+        WeatherCode.HEAVY_SNOW -> RESOURCES_HEAVY_SNOW
+        WeatherCode.SNOWSTORM -> RESOURCES_SNOWSTORM
         WeatherCode.WIND -> RESOURCES_WIND
         WeatherCode.FOG -> RESOURCES_FOG
         WeatherCode.HAZE -> RESOURCES_HAZE
@@ -104,7 +134,17 @@ object Constants {
         WeatherCode.PARTLY_CLOUDY -> SHORTCUTS_PARTLY_CLOUDY
         WeatherCode.CLOUDY -> SHORTCUTS_CLOUDY
         WeatherCode.RAIN -> SHORTCUTS_RAIN
+        WeatherCode.SHOWERY_RAIN -> SHORTCUTS_SHOWERY_RAIN
+        WeatherCode.LIGHT_RAIN -> SHORTCUTS_LIGHT_RAIN
+        WeatherCode.MODERATE_RAIN -> SHORTCUTS_MODERATE_RAIN
+        WeatherCode.HEAVY_RAIN -> SHORTCUTS_HEAVY_RAIN
+        WeatherCode.RAINSTORM -> SHORTCUTS_RAINSTORM
         WeatherCode.SNOW -> SHORTCUTS_SNOW
+        WeatherCode.SHOWERY_SNOW -> SHORTCUTS_SHOWERY_SNOW
+        WeatherCode.LIGHT_SNOW -> SHORTCUTS_LIGHT_SNOW
+        WeatherCode.MODERATE_SNOW -> SHORTCUTS_MODERATE_SNOW
+        WeatherCode.HEAVY_SNOW -> SHORTCUTS_HEAVY_SNOW
+        WeatherCode.SNOWSTORM -> SHORTCUTS_SNOWSTORM
         WeatherCode.WIND -> SHORTCUTS_WIND
         WeatherCode.FOG -> SHORTCUTS_FOG
         WeatherCode.HAZE -> SHORTCUTS_HAZE

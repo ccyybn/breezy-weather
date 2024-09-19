@@ -38,7 +38,15 @@ interface WeatherView {
         WEATHER_KIND_HAZE,
         WEATHER_KIND_THUNDER,
         WEATHER_KIND_THUNDERSTORM,
-        WEATHER_KIND_WIND
+        WEATHER_KIND_WIND,
+        WEATHER_KIND_LIGHT_RAIN,
+        WEATHER_KIND_MODERATE_RAIN,
+        WEATHER_KIND_HEAVY_RAIN,
+        WEATHER_KIND_RAINSTORM,
+        WEATHER_KIND_LIGHT_SNOW,
+        WEATHER_KIND_MODERATE_SNOW,
+        WEATHER_KIND_HEAVY_SNOW,
+        WEATHER_KIND_SNOWSTORM
     )
     annotation class WeatherKindRule
 
@@ -67,5 +75,13 @@ interface WeatherView {
         const val WEATHER_KIND_THUNDER = 10
         const val WEATHER_KIND_THUNDERSTORM = 11
         const val WEATHER_KIND_WIND = 12
+        const val WEATHER_KIND_LIGHT_RAIN = 13
+        const val WEATHER_KIND_MODERATE_RAIN = 14
+        const val WEATHER_KIND_HEAVY_RAIN = 15
+        const val WEATHER_KIND_RAINSTORM = 16
+        const val WEATHER_KIND_LIGHT_SNOW = 17
+        const val WEATHER_KIND_MODERATE_SNOW = 18
+        const val WEATHER_KIND_HEAVY_SNOW = 19
+        const val WEATHER_KIND_SNOWSTORM = 20
     }
 }

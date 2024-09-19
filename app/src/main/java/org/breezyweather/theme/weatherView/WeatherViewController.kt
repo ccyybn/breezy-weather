@@ -62,7 +62,15 @@ object WeatherViewController {
         WeatherCode.PARTLY_CLOUDY -> WeatherView.WEATHER_KIND_CLOUD
         WeatherCode.CLOUDY -> WeatherView.WEATHER_KIND_CLOUDY
         WeatherCode.RAIN -> WeatherView.WEATHER_KIND_RAINY
+        WeatherCode.LIGHT_RAIN -> WeatherView.WEATHER_KIND_LIGHT_RAIN
+        WeatherCode.SHOWERY_RAIN, WeatherCode.MODERATE_RAIN -> WeatherView.WEATHER_KIND_MODERATE_RAIN
+        WeatherCode.HEAVY_RAIN -> WeatherView.WEATHER_KIND_HEAVY_RAIN
+        WeatherCode.RAINSTORM -> WeatherView.WEATHER_KIND_RAINSTORM
         WeatherCode.SNOW -> WeatherView.WEATHER_KIND_SNOW
+        WeatherCode.LIGHT_SNOW -> WeatherView.WEATHER_KIND_LIGHT_SNOW
+        WeatherCode.SHOWERY_SNOW, WeatherCode.MODERATE_SNOW -> WeatherView.WEATHER_KIND_MODERATE_SNOW
+        WeatherCode.HEAVY_SNOW -> WeatherView.WEATHER_KIND_HEAVY_SNOW
+        WeatherCode.SNOWSTORM -> WeatherView.WEATHER_KIND_SNOWSTORM
         WeatherCode.WIND -> WeatherView.WEATHER_KIND_WIND
         WeatherCode.FOG -> WeatherView.WEATHER_KIND_FOG
         WeatherCode.HAZE -> WeatherView.WEATHER_KIND_HAZE
@@ -79,15 +87,23 @@ object WeatherViewController {
             WeatherCode.CLEAR -> 0
             WeatherCode.PARTLY_CLOUDY -> 1
             WeatherCode.CLOUDY -> 2
-            WeatherCode.RAIN -> 3
-            WeatherCode.SNOW -> 4
-            WeatherCode.SLEET -> 5
-            WeatherCode.HAIL -> 6
-            WeatherCode.FOG -> 7
-            WeatherCode.HAZE -> 8
-            WeatherCode.THUNDER -> 9
-            WeatherCode.THUNDERSTORM -> 10
-            WeatherCode.WIND -> 11
+            WeatherCode.RAIN, WeatherCode.SHOWERY_RAIN -> 3
+            WeatherCode.LIGHT_RAIN -> 4
+            WeatherCode.MODERATE_RAIN -> 5
+            WeatherCode.HEAVY_RAIN -> 6
+            WeatherCode.RAINSTORM -> 7
+            WeatherCode.SNOW, WeatherCode.SHOWERY_SNOW -> 8
+            WeatherCode.LIGHT_SNOW -> 9
+            WeatherCode.MODERATE_SNOW -> 10
+            WeatherCode.HEAVY_SNOW -> 11
+            WeatherCode.SNOWSTORM -> 12
+            WeatherCode.SLEET -> 13
+            WeatherCode.HAIL -> 14
+            WeatherCode.FOG -> 15
+            WeatherCode.HAZE -> 16
+            WeatherCode.THUNDER -> 17
+            WeatherCode.THUNDERSTORM -> 18
+            WeatherCode.WIND -> 19
             else -> 0
         }
         // ignore "automatic"
