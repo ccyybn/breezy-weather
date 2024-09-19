@@ -21,6 +21,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import androidx.annotation.ColorInt
 import androidx.annotation.Size
+import org.breezyweather.theme.weatherView.WeatherView
 import org.breezyweather.theme.weatherView.materialWeatherView.MaterialWeatherView.WeatherAnimationImplementor
 import java.util.Random
 import kotlin.math.pow
@@ -32,6 +33,7 @@ import kotlin.math.sin
 class SnowImplementor(
     @Size(2) canvasSizes: IntArray,
     animate: Boolean,
+    mType: Int,
     daylight: Boolean
 ) : WeatherAnimationImplementor() {
     private val mAnimate = animate
@@ -103,15 +105,22 @@ class SnowImplementor(
             Color.rgb(255, 255, 255),
             Color.rgb(255, 255, 255)
         )
-        val scales = floatArrayOf(0.6f, 0.8f, 1f)
+        val scales = if (mType == WeatherView.WEATHER_KIND_LIGHT_SNOW) floatArrayOf(0.4f, 0.5f, 0.7f) else floatArrayOf(0.6f, 0.8f, 1f)
+        val snowCount = when (mType) {
+            WeatherView.WEATHER_KIND_LIGHT_SNOW -> 70
+            WeatherView.WEATHER_KIND_MODERATE_SNOW -> 90
+            WeatherView.WEATHER_KIND_HEAVY_SNOW -> 150
+            WeatherView.WEATHER_KIND_SNOWSTORM -> 300
+            else -> 90
+        }
         val alphas = floatArrayOf(0.4f, 0.6f, 0.8f)
-        mSnows = Array(SNOW_COUNT) { i ->
+        mSnows = Array(snowCount) { i ->
             Snow(
                 canvasSizes[0],
                 canvasSizes[1],
-                colors[i * 3 / SNOW_COUNT],
-                alphas[i * 3 / SNOW_COUNT],
-                scales[i * 3 / SNOW_COUNT]
+                colors[i * 3 / snowCount],
+                alphas[i * 3 / snowCount],
+                scales[i * 3 / snowCount]
             )
         }
         mLastRotation3D = INITIAL_ROTATION_3D
@@ -147,7 +156,7 @@ class SnowImplementor(
 
     companion object {
         private const val INITIAL_ROTATION_3D = 1000f
-        private const val SNOW_COUNT = 90
+
         @ColorInt
         fun getThemeColor(daylight: Boolean): Int {
             return if (daylight) -0x974501 else -0xe5a46e

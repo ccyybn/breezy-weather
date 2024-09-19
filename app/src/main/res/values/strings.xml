@@ -774,6 +774,7 @@
     <string name="common_weather_text_rain_light">Light rain</string>
     <string name="common_weather_text_rain_moderate">Moderate rain</string>
     <string name="common_weather_text_rain_heavy">Heavy rain</string>
+    <string name="common_weather_text_rainstorm">Rainstorm</string>
     <!-- Rain showers is an intense rain, generally over a short period -->
     <string name="common_weather_text_rain_showers">Rain showers</string>
     <string name="common_weather_text_rain_showers_light">Light rain showers</string>
@@ -794,6 +795,7 @@
     <string name="common_weather_text_snow_light">Light snow</string>
     <string name="common_weather_text_snow_moderate">Moderate snow</string>
     <string name="common_weather_text_snow_heavy">Heavy snow</string>
+    <string name="common_weather_text_snowstorm">Snowstorm</string>
     <string name="common_weather_text_snow_showers">Snow showers</string>
     <string name="common_weather_text_snow_showers_light">Light snow showers</string>
     <string name="common_weather_text_snow_showers_heavy">Heavy snow showers</string>
@@ -812,7 +814,15 @@
     <string name="weather_kind_partly_cloudy" translatable="false">@string/common_weather_text_partly_cloudy</string>
     <string name="weather_kind_cloudy" translatable="false">@string/common_weather_text_cloudy</string>
     <string name="weather_kind_rain" translatable="false">@string/common_weather_text_rain</string>
+    <string name="weather_kind_light_rain" translatable="false">@string/common_weather_text_rain_light</string>
+    <string name="weather_kind_moderate_rain" translatable="false">@string/common_weather_text_rain_moderate</string>
+    <string name="weather_kind_heavy_rain" translatable="false">@string/common_weather_text_rain_heavy</string>
+    <string name="weather_kind_rainstorm" translatable="false">@string/common_weather_text_rainstorm</string>
     <string name="weather_kind_snow" translatable="false">@string/common_weather_text_snow</string>
+    <string name="weather_kind_light_snow" translatable="false">@string/common_weather_text_snow_light</string>
+    <string name="weather_kind_moderate_snow" translatable="false">@string/common_weather_text_snow_moderate</string>
+    <string name="weather_kind_heavy_snow" translatable="false">@string/common_weather_text_snow_heavy</string>
+    <string name="weather_kind_snowstorm" translatable="false">@string/common_weather_text_snowstorm</string>
     <string name="weather_kind_sleet" translatable="false">@string/common_weather_text_rain_snow_mixed</string>
     <string name="weather_kind_hail">Hail</string>
     <string name="weather_kind_fog" translatable="false">@string/common_weather_text_fog</string>
