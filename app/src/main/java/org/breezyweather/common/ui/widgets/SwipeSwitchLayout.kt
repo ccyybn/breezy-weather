@@ -130,35 +130,36 @@ class SwipeSwitchLayout @JvmOverloads constructor(
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(ev: MotionEvent): Boolean {
         if (!isEnabled || mIsBeingNestedScrolling) return false
-        if (mTarget == null && childCount > 0) {
-            mTarget = getChildAt(0)
-        }
-        if (mTarget == null) return false
-        when (ev.action) {
-            MotionEvent.ACTION_DOWN -> {
-                cancelResetAnimation()
-                mIsBeingTouched = true
-                mIsBeingDragged = false
-                mIsHorizontalDragged = false
-                mLastX = ev.x
-                mLastY = ev.y
-            }
-
-            MotionEvent.ACTION_MOVE -> {
-                if (mIsBeingDragged && mIsHorizontalDragged) {
-                    mSwipeDistance += (ev.x - mLastX).toInt()
-                    setTranslation(mSwipeTrigger, SWIPE_RATIO)
-                }
-                mLastX = ev.x
-                mLastY = ev.y
-            }
-
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                mIsBeingTouched = false
-                release(mSwipeTrigger)
-            }
-        }
         return true
+//        if (mTarget == null && childCount > 0) {
+//            mTarget = getChildAt(0)
+//        }
+//        if (mTarget == null) return false
+//        when (ev.action) {
+//            MotionEvent.ACTION_DOWN -> {
+//                cancelResetAnimation()
+//                mIsBeingTouched = true
+//                mIsBeingDragged = false
+//                mIsHorizontalDragged = false
+//                mLastX = ev.x
+//                mLastY = ev.y
+//            }
+//
+//            MotionEvent.ACTION_MOVE -> {
+//                if (mIsBeingDragged && mIsHorizontalDragged) {
+//                    mSwipeDistance += (ev.x - mLastX).toInt()
+//                    setTranslation(mSwipeTrigger, SWIPE_RATIO)
+//                }
+//                mLastX = ev.x
+//                mLastY = ev.y
+//            }
+//
+//            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+//                mIsBeingTouched = false
+//                release(mSwipeTrigger)
+//            }
+//        }
+//        return true
     }
 
     // control.
@@ -179,54 +180,54 @@ class SwipeSwitchLayout @JvmOverloads constructor(
     }
 
     private fun setTranslation(triggerDistance: Int, translateRatio: Float) {
-        val realDistance = mSwipeDistance
-            .coerceAtMost(triggerDistance)
-            .coerceAtLeast(-triggerDistance)
-            .toFloat()
-        val swipeDirection = if (mSwipeDistance < 0) SWIPE_DIRECTION_LEFT else SWIPE_DIRECTION_RIGHT
-        val progress = abs(realDistance) / triggerDistance
-        mTarget?.alpha = 1 - progress
-        mTarget?.translationX = (swipeDirection * translateRatio * triggerDistance
-            * log10(1 + 9.0 * abs(mSwipeDistance) / triggerDistance)
-            ).toFloat()
-        mSwitchListener?.onSwiped(swipeDirection, progress)
-        mPageSwipeListener?.let {
-            if (mSwipeDistance > 0) {
-                it.onPageScrolled(
-                    mPosition - 1,
-                    1 - min(1f, 1f * mSwipeDistance / triggerDistance),
-                    max(0, triggerDistance - mSwipeDistance)
-                )
-            } else {
-                it.onPageScrolled(
-                    mPosition,
-                    min(1f, -1f * mSwipeDistance / triggerDistance),
-                    min(-mSwipeDistance, triggerDistance)
-                )
-            }
-        }
+//        val realDistance = mSwipeDistance
+//            .coerceAtMost(triggerDistance)
+//            .coerceAtLeast(-triggerDistance)
+//            .toFloat()
+//        val swipeDirection = if (mSwipeDistance < 0) SWIPE_DIRECTION_LEFT else SWIPE_DIRECTION_RIGHT
+//        val progress = abs(realDistance) / triggerDistance
+//        mTarget?.alpha = 1 - progress
+//        mTarget?.translationX = (swipeDirection * translateRatio * triggerDistance
+//                * log10(1 + 9.0 * abs(mSwipeDistance) / triggerDistance)
+//                ).toFloat()
+//        mSwitchListener?.onSwiped(swipeDirection, progress)
+//        mPageSwipeListener?.let {
+//            if (mSwipeDistance > 0) {
+//                it.onPageScrolled(
+//                    mPosition - 1,
+//                    1 - min(1f, 1f * mSwipeDistance / triggerDistance),
+//                    max(0, triggerDistance - mSwipeDistance)
+//                )
+//            } else {
+//                it.onPageScrolled(
+//                    mPosition,
+//                    min(1f, -1f * mSwipeDistance / triggerDistance),
+//                    min(-mSwipeDistance, triggerDistance)
+//                )
+//            }
+//        }
     }
 
     private fun release(triggerDistance: Int) {
-        val swipeDirection = if (mSwipeDistance < 0) SWIPE_DIRECTION_LEFT else SWIPE_DIRECTION_RIGHT
-        if (abs(mSwipeDistance) > abs(triggerDistance)) {
-            position = swipeDirection
-            mSwitchListener?.onSwitched(swipeDirection)
-            mPageSwipeListener?.onPageSelected(mPosition)
-        } else {
-            if (mTarget == null) {
-                reset()
-                return
-            }
-            mResetAnimation = SpringAnimation(FloatValueHolder(mSwipeDistance.toFloat())).apply {
-                spring = SpringForce(0f)
-                    .setDampingRatio(SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY)
-                addUpdateListener { _: DynamicAnimation<*>?, value: Float, _: Float ->
-                    mSwipeDistance = value.toInt()
-                    setTranslation(mSwipeTrigger, SWIPE_RATIO)
-                }
-            }.also { it.start() }
-        }
+//        val swipeDirection = if (mSwipeDistance < 0) SWIPE_DIRECTION_LEFT else SWIPE_DIRECTION_RIGHT
+//        if (abs(mSwipeDistance) > abs(triggerDistance)) {
+//            position = swipeDirection
+//            mSwitchListener?.onSwitched(swipeDirection)
+//            mPageSwipeListener?.onPageSelected(mPosition)
+//        } else {
+//            if (mTarget == null) {
+//                reset()
+//                return
+//            }
+//            mResetAnimation = SpringAnimation(FloatValueHolder(mSwipeDistance.toFloat())).apply {
+//                spring = SpringForce(0f)
+//                    .setDampingRatio(SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY)
+//                addUpdateListener { _: DynamicAnimation<*>?, value: Float, _: Float ->
+//                    mSwipeDistance = value.toInt()
+//                    setTranslation(mSwipeTrigger, SWIPE_RATIO)
+//                }
+//            }.also { it.start() }
+//        }
     }
 
     // interface.
