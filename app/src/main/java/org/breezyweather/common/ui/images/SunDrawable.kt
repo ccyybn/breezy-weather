@@ -22,11 +22,11 @@ import android.graphics.ColorFilter
 import android.graphics.Paint
 import android.graphics.PixelFormat
 import android.graphics.Rect
+import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import androidx.annotation.ColorInt
-import androidx.annotation.Size
 import kotlin.math.min
-import kotlin.math.sin
+
 
 class SunDrawable : Drawable() {
     private val mPaint = Paint().apply {
@@ -34,19 +34,19 @@ class SunDrawable : Drawable() {
     }
 
     @ColorInt
-    private val mCoreColor: Int = Color.rgb(254, 214, 117)
+    private val mColor: Int = Color.rgb(255, 184, 62)
 
-    @Size(2)
-    @ColorInt
-    private val mHaloColors: IntArray = intArrayOf(
-        Color.rgb(249, 183, 93),
-        Color.rgb(252, 198, 101)
-    )
     private var mAlpha: Float = 1f
     private var mBounds: Rect
-    private var mRadius = 0f
     private var mCX = 0f
     private var mCY = 0f
+    private var mCoreRadius = 0f
+    private var haloHeight = 0f
+    private var haloMargins = 0f
+    private var haloRadius = 0f
+    private var haloWidth = 0f
+    private var haloRectF: RectF = RectF()
+
 
     init {
         mBounds = bounds
@@ -54,10 +54,24 @@ class SunDrawable : Drawable() {
     }
 
     private fun ensurePosition(bounds: Rect) {
-        val boundSize = min(bounds.width(), bounds.height()).toFloat()
-        mRadius = (sin(Math.PI / 4) * boundSize / 2).toFloat() - 2
-        mCX = (1.0 * bounds.width() / 2 + bounds.left).toFloat()
-        mCY = (1.0 * bounds.height() / 2 + bounds.top).toFloat()
+        val min = min(bounds.width(), bounds.height()).toFloat()
+        mCoreRadius = (0.4843f * min) / 2.0f
+        val width = bounds.width().toDouble()
+        val d = bounds.left.toDouble()
+        java.lang.Double.isNaN(width)
+        java.lang.Double.isNaN(d)
+        mCX = (((width * 1.0) / 2.0) + d).toFloat()
+        val height = bounds.height().toDouble()
+        val d2 = bounds.top.toDouble()
+        java.lang.Double.isNaN(height)
+        java.lang.Double.isNaN(d2)
+        mCY = (((height * 1.0) / 2.0) + d2).toFloat()
+        val f = 0.0703f * min
+        haloWidth = f
+        haloHeight = 0.1367f * min
+        haloRadius = f / 2.0f
+        haloMargins = min * 0.0898f
+
     }
 
     override fun onBoundsChange(bounds: Rect) {
@@ -66,28 +80,33 @@ class SunDrawable : Drawable() {
     }
 
     override fun draw(canvas: Canvas) {
-        mPaint.alpha = (mAlpha * 255).toInt()
-        mPaint.color = mHaloColors[0]
-        canvas.drawRect(
-            mCX - mRadius,
-            mCY - mRadius,
-            mCX + mRadius,
-            mCY + mRadius,
-            mPaint
-        )
-        mPaint.color = mHaloColors[0]
-        val restoreCount = canvas.save()
-        canvas.rotate(45f, mCX, mCY)
-        canvas.drawRect(
-            mCX - mRadius,
-            mCY - mRadius,
-            mCX + mRadius,
-            mCY + mRadius,
-            mPaint
-        )
-        canvas.restoreToCount(restoreCount)
-        mPaint.color = mCoreColor
-        canvas.drawCircle(mCX, mCY, mRadius, mPaint)
+        mPaint.alpha = (mAlpha * 255.0f).toInt()
+        mPaint.color = mColor
+        for (i in 0..3) {
+            val save = canvas.save()
+            canvas.rotate((i * 45).toFloat(), mCX, mCY)
+            val rectF: RectF = haloRectF
+            val f = mCX
+            val f2 = haloWidth
+            val f3 = mCoreRadius
+            val f4 = haloHeight
+            val f5 = haloMargins
+            rectF[f - (f2 / 2.0f), (f - f3) - f4 - f5, f2 / 2.0f + f] = ((f - f3) - f4) - f5 + f4
+            val rectF2: RectF = haloRectF
+            val f6 = haloRadius
+            canvas.drawRoundRect(rectF2, f6, f6, mPaint)
+            val rectF3: RectF = haloRectF
+            val f7 = mCX
+            val f8 = haloWidth
+            val f9 = mCoreRadius
+            val f10 = haloMargins
+            rectF3[f7 - (f8 / 2.0f), f7 + f9 + f10, f8 / 2.0f + f7] = f7 + f9 + f10 + haloHeight
+            val rectF4: RectF = haloRectF
+            val f11 = haloRadius
+            canvas.drawRoundRect(rectF4, f11, f11, mPaint)
+            canvas.restoreToCount(save)
+        }
+        canvas.drawCircle(mCX, mCY, mCoreRadius, mPaint)
     }
 
     override fun setAlpha(alpha: Int) {
