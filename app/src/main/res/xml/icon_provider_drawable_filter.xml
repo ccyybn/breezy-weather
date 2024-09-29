@@ -20,11 +20,11 @@
     <item name="weather_cloudy_night_mini_xml" value="weather_cloudy_mini_xml" />
 
     <item name="weather_rain_day" value="weather_rain" />
-    <item name="weather_showery_rain_day" value="weather_rain" />
-    <item name="weather_light_rain_day" value="weather_rain" />
-    <item name="weather_moderate_rain_day" value="weather_rain" />
-    <item name="weather_heavy_rain_day" value="weather_rain" />
-    <item name="weather_rainstorm_day" value="weather_rain" />
+    <item name="weather_showery_rain_day" value="weather_showery_rain_day" />
+    <item name="weather_light_rain_day" value="weather_light_rain" />
+    <item name="weather_moderate_rain_day" value="weather_moderate_rain" />
+    <item name="weather_heavy_rain_day" value="weather_heavy_rain" />
+    <item name="weather_rainstorm_day" value="weather_rainstorm" />
     <item name="weather_rain_day_1" value="weather_rain_1" />
     <item name="weather_rain_day_2" value="weather_rain_2" />
     <item name="weather_rain_day_3" value="weather_rain_3" />
@@ -34,11 +34,11 @@
     <item name="weather_rain_day_mini_xml" value="weather_rain_mini_xml" />
 
     <item name="weather_rain_night" value="weather_rain" />
-    <item name="weather_showery_rain_night" value="weather_rain" />
-    <item name="weather_light_rain_night" value="weather_rain" />
-    <item name="weather_moderate_rain_night" value="weather_rain" />
-    <item name="weather_heavy_rain_night" value="weather_rain" />
-    <item name="weather_rainstorm_night" value="weather_rain" />
+    <item name="weather_showery_rain_night" value="weather_showery_rain_night" />
+    <item name="weather_light_rain_night" value="weather_light_rain" />
+    <item name="weather_moderate_rain_night" value="weather_moderate_rain" />
+    <item name="weather_heavy_rain_night" value="weather_heavy_rain" />
+    <item name="weather_rainstorm_night" value="weather_rainstorm" />
     <item name="weather_rain_night_1" value="weather_rain_1" />
     <item name="weather_rain_night_2" value="weather_rain_2" />
     <item name="weather_rain_night_3" value="weather_rain_3" />
@@ -48,11 +48,11 @@
     <item name="weather_rain_night_mini_xml" value="weather_rain_mini_xml" />
 
     <item name="weather_snow_day" value="weather_snow" />
-    <item name="weather_showery_snow_day" value="weather_snow" />
-    <item name="weather_light_snow_day" value="weather_snow" />
-    <item name="weather_moderate_snow_day" value="weather_snow" />
-    <item name="weather_heavy_snow_day" value="weather_snow" />
-    <item name="weather_snowstorm_day" value="weather_snow" />
+    <item name="weather_showery_snow_day" value="weather_showery_snow_day" />
+    <item name="weather_light_snow_day" value="weather_light_snow" />
+    <item name="weather_moderate_snow_day" value="weather_moderate_snow" />
+    <item name="weather_heavy_snow_day" value="weather_heavy_snow" />
+    <item name="weather_snowstorm_day" value="weather_snowstorm" />
     <item name="weather_snow_day_1" value="weather_snow_1" />
     <item name="weather_snow_day_2" value="weather_snow_2" />
     <item name="weather_snow_day_3" value="weather_snow_3" />
@@ -62,11 +62,11 @@
     <item name="weather_snow_day_mini_xml" value="weather_snow_mini_xml" />
 
     <item name="weather_snow_night" value="weather_snow" />
-    <item name="weather_showery_snow_night" value="weather_snow" />
-    <item name="weather_light_snow_night" value="weather_snow" />
-    <item name="weather_moderate_snow_night" value="weather_snow" />
-    <item name="weather_heavy_snow_night" value="weather_snow" />
-    <item name="weather_snowstorm_night" value="weather_snow" />
+    <item name="weather_showery_snow_night" value="weather_showery_snow_night" />
+    <item name="weather_light_snow_night" value="weather_light_snow" />
+    <item name="weather_moderate_snow_night" value="weather_moderate_snow" />
+    <item name="weather_heavy_snow_night" value="weather_heavy_snow" />
+    <item name="weather_snowstorm_night" value="weather_snowstorm" />
     <item name="weather_snow_night_1" value="weather_snow_1" />
     <item name="weather_snow_night_2" value="weather_snow_2" />
     <item name="weather_snow_night_3" value="weather_snow_3" />
