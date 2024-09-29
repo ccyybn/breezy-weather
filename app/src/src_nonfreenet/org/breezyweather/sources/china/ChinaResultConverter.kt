@@ -46,6 +46,7 @@ import org.breezyweather.sources.china.json.ChinaMinutelyResult
 import java.util.Calendar
 import java.util.Date
 import java.util.Objects
+import java.util.regex.Pattern
 
 fun convert(
     location: Location?, // Null if location search, current location if reverse geocoding
@@ -267,14 +268,45 @@ private fun getAlertList(result: ChinaForecastResult): List<Alert> {
     return result.alerts.map { alert ->
         Alert(
             // Create unique ID from: title, level, start time
-            alertId = Objects.hash(alert.title, alert.level, alert.pubTime?.time ?: System.currentTimeMillis()).toString(),
+            alertId = Objects.hash(alert.title, alert.detail, alert.level, alert.pubTime?.time ?: System.currentTimeMillis()).toString(),
             startDate = alert.pubTime,
-            headline = alert.title,
+            headline = getHeadLine(alert.title, alert.detail),
             description = alert.detail,
             severity = getAlertPriority(alert.level),
             color = getAlertColor(alert.level)
         )
+    }.sortedWith(compareByDescending<Alert> { it.severity.id }.thenByDescending(Alert::startDate))
+}
+
+private fun getHeadLine(title: String?, description: String?): String? {
+    if (description == null) return title
+    var result: String? = null
+
+    var pattern = Pattern.compile("""^(.+?)气象台.+?发布“?(.+?)预警""")
+    var matcher = pattern.matcher(description)
+    if (matcher.find()) result = "${matcher.group(1)!!}发布${matcher.group(2)!!}预警"
+
+    if (result == null) {
+        pattern = Pattern.compile("""^(.+?)气象台.+?更新“?(.+?)预警(信号)*为“?(.+?)预警""")
+        matcher = pattern.matcher(description)
+        if (matcher.find()) result = "${matcher.group(1)!!}更新${matcher.group(2)!!}预警为${matcher.group(4)!!}预警"
     }
+    if (result == null) {
+        pattern = Pattern.compile("""^(.+?)联合发布“?(.+?)预警""")
+        matcher = pattern.matcher(description)
+        if (matcher.find()) result = "${matcher.group(1)!!}联合发布${matcher.group(2)!!}预警"
+    }
+    if (result == null) {
+        pattern = Pattern.compile("""^(.+?)(\d+年)*(\d+月)*(\d+日)*(\d+时)*(\d+分)*发布“?(.+?)预警""")
+        matcher = pattern.matcher(description)
+        if (matcher.find()) result = "${matcher.group(1)!!}发布${matcher.group(7)!!}预警"
+    }
+    if (result == null) {
+        pattern = Pattern.compile("""^(.+?)(\d+年)*(\d+月)*(\d+日)*(\d+时)*(\d+分)*更新“?(.+?)预警(信号)*为“?(.+?)预警""")
+        matcher = pattern.matcher(description)
+        if (matcher.find()) result = "${matcher.group(1)!!}更新${matcher.group(7)!!}预警为${matcher.group(9)!!}预警"
+    }
+    return result ?: title
 }
 
 fun convertSecondary(
@@ -371,10 +403,10 @@ private fun getWeatherCode(icon: String?): WeatherCode? {
 private fun getAlertPriority(color: String?): AlertSeverity {
     if (color.isNullOrEmpty()) return AlertSeverity.UNKNOWN
     return when (color) {
-        "蓝", "蓝色" -> AlertSeverity.EXTREME
-        "黄", "黄色" -> AlertSeverity.SEVERE
-        "橙", "橙色", "橘", "橘色", "橘黄", "橘黄色" -> AlertSeverity.MODERATE
-        "红", "红色" -> AlertSeverity.MINOR
+        "蓝", "蓝色" -> AlertSeverity.MINOR
+        "黄", "黄色" -> AlertSeverity.MODERATE
+        "橙", "橙色", "橘", "橘色", "橘黄", "橘黄色" -> AlertSeverity.SEVERE
+        "红", "红色" -> AlertSeverity.EXTREME
         else -> AlertSeverity.UNKNOWN
     }
 }
@@ -383,10 +415,10 @@ private fun getAlertPriority(color: String?): AlertSeverity {
 private fun getAlertColor(color: String?): Int? {
     if (color.isNullOrEmpty()) return null
     return when (color) {
-        "蓝", "蓝色" -> Color.rgb(51, 100, 255)
-        "黄", "黄色" -> Color.rgb(250, 237, 36)
-        "橙", "橙色", "橘", "橘色", "橘黄", "橘黄色" -> Color.rgb(249, 138, 30)
-        "红", "红色" -> Color.rgb(215, 48, 42)
+        "蓝", "蓝色" -> Color.rgb(66, 151, 231)
+        "黄", "黄色" -> Color.rgb(255, 242, 184)
+        "橙", "橙色", "橘", "橘色", "橘黄", "橘黄色" -> Color.rgb(255, 145, 0)
+        "红", "红色" -> Color.rgb(255, 86, 86)
         else -> null
     }
 }
