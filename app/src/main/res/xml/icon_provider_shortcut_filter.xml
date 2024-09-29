@@ -10,74 +10,74 @@
     <item name="shortcuts_rain_day" value="shortcuts_rain" />
     <item name="shortcuts_rain_day_foreground" value="shortcuts_rain_foreground" />
 
-    <item name="shortcuts_showery_rain_day" value="shortcuts_rain" />
-    <item name="shortcuts_showery_rain_day_foreground" value="shortcuts_rain_foreground" />
+    <item name="shortcuts_showery_rain_day" value="shortcuts_showery_rain_day" />
+    <item name="shortcuts_showery_rain_day_foreground" value="shortcuts_showery_rain_day_foreground" />
 
-    <item name="shortcuts_light_rain_day" value="shortcuts_rain" />
-    <item name="shortcuts_light_rain_day_foreground" value="shortcuts_rain_foreground" />
+    <item name="shortcuts_light_rain_day" value="shortcuts_light_rain" />
+    <item name="shortcuts_light_rain_day_foreground" value="shortcuts_light_rain_foreground" />
 
-    <item name="shortcuts_moderate_rain_day" value="shortcuts_rain" />
-    <item name="shortcuts_moderate_rain_day_foreground" value="shortcuts_rain_foreground" />
+    <item name="shortcuts_moderate_rain_day" value="shortcuts_moderate_rain" />
+    <item name="shortcuts_moderate_rain_day_foreground" value="shortcuts_moderate_rain_foreground" />
 
-    <item name="shortcuts_heavy_rain_day" value="shortcuts_rain" />
-    <item name="shortcuts_heavy_rain_day_foreground" value="shortcuts_rain_foreground" />
+    <item name="shortcuts_heavy_rain_day" value="shortcuts_heavy_rain" />
+    <item name="shortcuts_heavy_rain_day_foreground" value="shortcuts_heavy_rain_foreground" />
 
-    <item name="shortcuts_rainstorm_day" value="shortcuts_rain" />
-    <item name="shortcuts_rainstorm_day_foreground" value="shortcuts_rain_foreground" />
+    <item name="shortcuts_rainstorm_day" value="shortcuts_rainstorm" />
+    <item name="shortcuts_rainstorm_day_foreground" value="shortcuts_rainstorm_foreground" />
 
     <item name="shortcuts_rain_night" value="shortcuts_rain" />
     <item name="shortcuts_rain_night_foreground" value="shortcuts_rain_foreground" />
 
-    <item name="shortcuts_showery_rain_night" value="shortcuts_rain" />
-    <item name="shortcuts_showery_rain_night_foreground" value="shortcuts_rain_foreground" />
+    <item name="shortcuts_showery_rain_night" value="shortcuts_showery_rain_night" />
+    <item name="shortcuts_showery_rain_night_foreground" value="shortcuts_showery_rain_night_foreground" />
 
-    <item name="shortcuts_light_rain_night" value="shortcuts_rain" />
-    <item name="shortcuts_light_rain_night_foreground" value="shortcuts_rain_foreground" />
+    <item name="shortcuts_light_rain_night" value="shortcuts_light_rain" />
+    <item name="shortcuts_light_rain_night_foreground" value="shortcuts_light_rain_foreground" />
 
-    <item name="shortcuts_moderate_rain_night" value="shortcuts_rain" />
-    <item name="shortcuts_moderate_rain_night_foreground" value="shortcuts_rain_foreground" />
+    <item name="shortcuts_moderate_rain_night" value="shortcuts_moderate_rain" />
+    <item name="shortcuts_moderate_rain_night_foreground" value="shortcuts_moderate_rain_foreground" />
 
-    <item name="shortcuts_heavy_rain_night" value="shortcuts_rain" />
-    <item name="shortcuts_heavy_rain_night_foreground" value="shortcuts_rain_foreground" />
+    <item name="shortcuts_heavy_rain_night" value="shortcuts_heavy_rain" />
+    <item name="shortcuts_heavy_rain_night_foreground" value="shortcuts_heavy_rain_foreground" />
 
-    <item name="shortcuts_rainstorm_night" value="shortcuts_rain" />
-    <item name="shortcuts_rainstorm_night_foreground" value="shortcuts_rain_foreground" />
+    <item name="shortcuts_rainstorm_night" value="shortcuts_rainstorm" />
+    <item name="shortcuts_rainstorm_night_foreground" value="shortcuts_rainstorm_foreground" />
 
     <item name="shortcuts_snow_day" value="shortcuts_snow" />
     <item name="shortcuts_snow_day_foreground" value="shortcuts_snow_foreground" />
 
-    <item name="shortcuts_showery_snow_day" value="shortcuts_snow" />
-    <item name="shortcuts_showery_snow_day_foreground" value="shortcuts_snow_foreground" />
+    <item name="shortcuts_showery_snow_day" value="shortcuts_showery_snow_day" />
+    <item name="shortcuts_showery_snow_day_foreground" value="shortcuts_showery_snow_day_foreground" />
 
-    <item name="shortcuts_light_snow_day" value="shortcuts_snow" />
-    <item name="shortcuts_light_snow_day_foreground" value="shortcuts_snow_foreground" />
+    <item name="shortcuts_light_snow_day" value="shortcuts_light_snow" />
+    <item name="shortcuts_light_snow_day_foreground" value="shortcuts_light_snow_foreground" />
 
-    <item name="shortcuts_moderate_snow_day" value="shortcuts_snow" />
-    <item name="shortcuts_moderate_snow_day_foreground" value="shortcuts_snow_foreground" />
+    <item name="shortcuts_moderate_snow_day" value="shortcuts_moderate_snow" />
+    <item name="shortcuts_moderate_snow_day_foreground" value="shortcuts_moderate_snow_foreground" />
 
-    <item name="shortcuts_heavy_snow_day" value="shortcuts_snow" />
-    <item name="shortcuts_heavy_snow_day_foreground" value="shortcuts_snow_foreground" />
+    <item name="shortcuts_heavy_snow_day" value="shortcuts_heavy_snow" />
+    <item name="shortcuts_heavy_snow_day_foreground" value="shortcuts_heavy_snow_foreground" />
 
-    <item name="shortcuts_snowstorm_day" value="shortcuts_snow" />
-    <item name="shortcuts_snowstorm_day_foreground" value="shortcuts_snow_foreground" />
+    <item name="shortcuts_snowstorm_day" value="shortcuts_snowstorm" />
+    <item name="shortcuts_snowstorm_day_foreground" value="shortcuts_snowstorm_foreground" />
 
     <item name="shortcuts_snow_night" value="shortcuts_snow" />
     <item name="shortcuts_snow_night_foreground" value="shortcuts_snow_foreground" />
 
-    <item name="shortcuts_showery_snow_night" value="shortcuts_snow" />
-    <item name="shortcuts_showery_snow_night_foreground" value="shortcuts_snow_foreground" />
+    <item name="shortcuts_showery_snow_night" value="shortcuts_showery_snow_night" />
+    <item name="shortcuts_showery_snow_night_foreground" value="shortcuts_showery_snow_night_foreground" />
 
-    <item name="shortcuts_light_snow_night" value="shortcuts_snow" />
-    <item name="shortcuts_light_snow_night_foreground" value="shortcuts_snow_foreground" />
+    <item name="shortcuts_light_snow_night" value="shortcuts_light_snow" />
+    <item name="shortcuts_light_snow_night_foreground" value="shortcuts_light_snow_foreground" />
 
-    <item name="shortcuts_moderate_snow_night" value="shortcuts_snow" />
-    <item name="shortcuts_moderate_snow_night_foreground" value="shortcuts_snow_foreground" />
+    <item name="shortcuts_moderate_snow_night" value="shortcuts_moderate_snow" />
+    <item name="shortcuts_moderate_snow_night_foreground" value="shortcuts_moderate_snow_foreground" />
 
-    <item name="shortcuts_heavy_snow_night" value="shortcuts_snow" />
-    <item name="shortcuts_heavy_snow_night_foreground" value="shortcuts_snow_foreground" />
+    <item name="shortcuts_heavy_snow_night" value="shortcuts_heavy_snow" />
+    <item name="shortcuts_heavy_snow_night_foreground" value="shortcuts_heavy_snow_foreground" />
 
-    <item name="shortcuts_snowstorm_night" value="shortcuts_snow" />
-    <item name="shortcuts_snowstorm_night_foreground" value="shortcuts_snow_foreground" />
+    <item name="shortcuts_snowstorm_night" value="shortcuts_snowstorm" />
+    <item name="shortcuts_snowstorm_night_foreground" value="shortcuts_snowstorm_foreground" />
 
     <item name="shortcuts_wind_day" value="shortcuts_wind" />
     <item name="shortcuts_wind_day_foreground" value="shortcuts_wind_foreground" />
