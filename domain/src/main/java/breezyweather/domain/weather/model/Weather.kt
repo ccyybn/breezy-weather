@@ -57,17 +57,17 @@ data class Weather(
         val updateTime = base.refreshTime?.time ?: 0
         val currentTime = System.currentTimeMillis()
         return (pollingIntervalHours == null ||
-            (currentTime >= updateTime &&
-                currentTime - updateTime < pollingIntervalHours * 1.hours.inWholeMilliseconds))
+                (currentTime >= updateTime &&
+                        currentTime - updateTime < pollingIntervalHours * 1.hours.inWholeMilliseconds))
     }
 
     val currentAlertList: List<Alert> = alertList
         .filter {
             (it.startDate == null && it.endDate == null) ||
-                (it.startDate != null && it.endDate != null && Date() in it.startDate..it.endDate) ||
-                (it.startDate == null && it.endDate != null && Date() < it.endDate) ||
-                (it.startDate != null && it.endDate == null && Date() > it.startDate)
-        }
+                    (it.startDate != null && it.endDate != null && Date() in it.startDate..it.endDate) ||
+                    (it.startDate == null && it.endDate != null && Date() < it.endDate) ||
+                    (it.startDate != null && it.endDate == null && Date() > it.startDate)
+        }.sortedWith(compareByDescending<Alert> { it.severity.id }.thenByDescending(Alert::startDate))
 
     val minutelyForecastBy5Minutes: List<Minutely>
         get() {
