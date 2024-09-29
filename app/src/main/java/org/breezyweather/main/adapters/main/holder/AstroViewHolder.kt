@@ -29,7 +29,6 @@ import android.view.animation.OvershootInterpolator
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.Size
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import breezyweather.domain.location.model.Location
 import breezyweather.domain.weather.model.Weather
@@ -220,7 +219,7 @@ class AstroViewHolder(parent: ViewGroup) : AbstractMainCardViewHolder(
                 mAnimCurrentTimes[0] = animation.animatedValue as Long
                 mSunMoonView.setTime(mStartTimes, mEndTimes, mAnimCurrentTimes)
             }
-            val totalRotationDay = 360.0 * 7 * (mCurrentTimes[0] - mStartTimes[0]) / (mEndTimes[0] - mStartTimes[0])
+            val totalRotationDay = 360.0 * 5 * (mCurrentTimes[0] - mStartTimes[0]) / (mEndTimes[0] - mStartTimes[0]) + 360.0
             val rotateDay = ValueAnimator.ofObject(
                 FloatEvaluator(), 0, (totalRotationDay - totalRotationDay % 360).toInt()
             )
@@ -235,11 +234,16 @@ class AstroViewHolder(parent: ViewGroup) : AbstractMainCardViewHolder(
                 mAnimCurrentTimes[1] = animation.animatedValue as Long
                 mSunMoonView.setTime(mStartTimes, mEndTimes, mAnimCurrentTimes)
             }
-            val totalRotationNight = 360.0 * 4 * (mCurrentTimes[1] - mStartTimes[1]) / (mEndTimes[1] - mStartTimes[1])
+            val arcAngle = 135
+            val offsetAngle = 0
+            var proportion = (mCurrentTimes[1] - mStartTimes[1]).toFloat() / (mEndTimes[1] - mStartTimes[1]).toFloat()
+            if (proportion > 1) proportion = 1.0F
+            val round = (360.0 * 15 * proportion / 360.0).toInt() + 1
+            val totalRotationNight = arcAngle * proportion + offsetAngle + 360.0 * round
             val rotateNight = ValueAnimator.ofObject(
-                FloatEvaluator(), 0, (totalRotationNight - totalRotationNight % 360).toInt()
+                FloatEvaluator(), offsetAngle, totalRotationNight
             )
-            rotateNight.addUpdateListener { animation: ValueAnimator -> mSunMoonView.setNightIndicatorRotation(-1 * animation.animatedValue as Float) }
+            rotateNight.addUpdateListener { animation: ValueAnimator -> mSunMoonView.setNightIndicatorRotation(animation.animatedValue as Float) }
             mAttachAnimatorSets[1] = AnimatorSet().apply {
                 playTogether(timeNight, rotateNight)
                 interpolator = OvershootInterpolator(1f)
@@ -293,6 +297,8 @@ class AstroViewHolder(parent: ViewGroup) : AbstractMainCardViewHolder(
             mStartTimes[1] = currentTime + 1
             mEndTimes[1] = currentTime + 1
         }
+        if (mCurrentTimes[0] > mEndTimes[0]) mCurrentTimes[0] = mEndTimes[0]
+        if (mCurrentTimes[1] > mEndTimes[1]) mCurrentTimes[1] = mEndTimes[1]
         mAnimCurrentTimes = longArrayOf(mCurrentTimes[0], mCurrentTimes[1])
     }
 
@@ -303,8 +309,8 @@ class AstroViewHolder(parent: ViewGroup) : AbstractMainCardViewHolder(
     private fun getPathAnimatorDuration(index: Int): Long {
         val duration = max(
             1000 + 3000.0
-                * (mCurrentTimes[index] - mStartTimes[index])
-                / (mEndTimes[index] - mStartTimes[index]),
+                    * (mCurrentTimes[index] - mStartTimes[index])
+                    / (mEndTimes[index] - mStartTimes[index]),
             0.0
         ).toLong()
         return min(duration, 4000)

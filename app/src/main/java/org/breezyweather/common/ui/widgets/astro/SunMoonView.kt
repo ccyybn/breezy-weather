@@ -281,13 +281,13 @@ class SunMoonView @JvmOverloads constructor(
             canvas,
             1,
             startAngle,
-            (1.0 * mProgresses[1] / mMaxes[1] * ARC_ANGLE).toFloat()
+            (1.0 * mProgresses[1] / mMaxes[1] * ARC_ANGLE - 1.8).toFloat()
         )
         drawPathLine(
             canvas,
             0,
             startAngle,
-            (1.0 * mProgresses[0] / mMaxes[0] * ARC_ANGLE).toFloat()
+            (1.0 * mProgresses[0] / mMaxes[0] * ARC_ANGLE - 1.8).toFloat()
         )
         var restoreCount: Int
 
@@ -323,7 +323,7 @@ class SunMoonView @JvmOverloads constructor(
             mPaint.setXfermode(mClearXfermode)
             canvas.drawRect(
                 (mRectF.centerX() + mRectF.width() / 2
-                    * cos((360 - progressEndAngle) * Math.PI / 180)).toFloat(),
+                        * cos((360 - progressEndAngle) * Math.PI / 180)).toFloat(),
                 mRectF.top,
                 mRectF.right,
                 mRectF.top + mRectF.height() / 2,
@@ -340,7 +340,7 @@ class SunMoonView @JvmOverloads constructor(
         startAngle: Float,
         progressSweepAngle: Float
     ) {
-        if (mProgresses[index] > 0) {
+        if (mProgresses[index] > 0 && progressSweepAngle > 0) {
             mPaint.apply {
                 color = mLineColors[index]
                 strokeWidth = mLineSize
