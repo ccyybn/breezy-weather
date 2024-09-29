@@ -75,11 +75,7 @@ class DefaultResourceProvider : ResourceProvider() {
 
     @Size(3)
     override fun getWeatherIcons(code: WeatherCode?, dayTime: Boolean): Array<Drawable?> {
-        return arrayOf(
-            getDrawable(getWeatherIconName(code, dayTime, 1)),
-            getDrawable(getWeatherIconName(code, dayTime, 2)),
-            getDrawable(getWeatherIconName(code, dayTime, 3))
-        )
+        return arrayOf(getWeatherIcon(code, dayTime), null, null)
     }
 
     private fun getDrawable(resName: String): Drawable? {

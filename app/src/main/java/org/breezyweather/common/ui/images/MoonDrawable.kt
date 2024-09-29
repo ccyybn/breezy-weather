@@ -28,7 +28,7 @@ import android.graphics.Xfermode
 import android.graphics.drawable.Drawable
 import androidx.annotation.ColorInt
 import kotlin.math.min
-import kotlin.math.sin
+import kotlin.math.tan
 
 class MoonDrawable : Drawable() {
     private val mPaint = Paint().apply {
@@ -37,7 +37,7 @@ class MoonDrawable : Drawable() {
     private val mClearXfermode: Xfermode
 
     @ColorInt
-    private val mCoreColor: Int = Color.rgb(171, 202, 247)
+    private val mCoreColor: Int = Color.rgb(255, 184, 62);
     private var mAlpha: Float = 1f
     private var mBounds: Rect
     private var mCoreRadius = 0f
@@ -54,13 +54,16 @@ class MoonDrawable : Drawable() {
     }
 
     private fun ensurePosition(bounds: Rect) {
-        val boundSize = min(bounds.width(), bounds.height()).toFloat()
-        mCoreRadius = ((sin(Math.PI / 4) * boundSize / 2 + boundSize / 2) / 2 - 2).toFloat()
-        mCoreCenterX = (1.0 * bounds.width() / 2 + bounds.left).toFloat()
-        mCoreCenterY = (1.0 * bounds.height() / 2 + bounds.top).toFloat()
-        mShaderRadius = mCoreRadius * 0.9050f
-        mShaderCenterX = mCoreCenterX + mCoreRadius * 0.5914f
-        mShaderCenterY = mCoreCenterY - mCoreRadius * 0.5932f
+        val min = min(bounds.width(), bounds.height())
+        val rect = Rect(bounds.left + ((bounds.width() - min) / 2), bounds.top + ((bounds.height() - min) / 2), bounds.right - ((bounds.width() - min) / 2), bounds.bottom - ((bounds.height() - min) / 2))
+        val f = min.toFloat()
+        val scale = 0.8f
+        mCoreRadius = ((0.8945f * f) / 2.0f) * 0.9f * scale
+        mCoreCenterX = (rect.width() / 2.0f) + rect.left
+        mCoreCenterY = (rect.height() / 2.0f) + rect.top
+        mShaderRadius = ((0.5742f * f) / 2.0f) * 0.9f * scale
+        mShaderCenterX = mCoreCenterX + (0.11026974f * f * scale)
+        mShaderCenterY = mCoreCenterY - (0.11026974f * f * scale * tan(Math.toRadians(67.5)).toFloat())
     }
 
     override fun onBoundsChange(bounds: Rect) {
