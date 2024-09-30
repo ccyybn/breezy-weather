@@ -25,12 +25,12 @@
     <color name="colorLevel_5">#99004c</color>
     <color name="colorLevel_6">#7e0023</color>
 
-    <color name="aqiLevel_1">#00e59b</color>
-    <color name="aqiLevel_2">#ffc302</color>
-    <color name="aqiLevel_3">#ff712b</color>
-    <color name="aqiLevel_4">#f62a55</color>
-    <color name="aqiLevel_5">#c72eaa</color>
-    <color name="aqiLevel_6">#9930ff</color>
+    <color name="aqiLevel_1">#31cd31</color>
+    <color name="aqiLevel_2">#f0e814</color>
+    <color name="aqiLevel_3">#e88019</color>
+    <color name="aqiLevel_4">#e02d1c</color>
+    <color name="aqiLevel_5">#af32ba</color>
+    <color name="aqiLevel_6">#950c32</color>
 
     <color name="pollenLevel_0">#bfbfbf</color>
     <color name="pollenLevel_1">#08c286</color>
