@@ -16,11 +16,24 @@
 
 package org.breezyweather.common.extensions
 
+import android.annotation.SuppressLint
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
+
+@SuppressLint("NewApi")
+fun Date.toLocalDateTime(zoneId: ZoneId): LocalDateTime {
+    return LocalDateTime.ofInstant(this.toInstant(), zoneId)
+}
+
+@SuppressLint("NewApi")
+fun LocalDateTime.toDate(zoneId: ZoneId): Date {
+    return Date.from(this.atZone(zoneId).toInstant())
+}
 
 /**
  * The functions below make use of old java.util.* that should be replaced with android.icu
