@@ -17,10 +17,12 @@
 
 package breezyweather.domain.location.model
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 import breezyweather.domain.weather.model.Weather
+import java.time.ZoneId
 import java.util.Locale
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -76,6 +78,8 @@ data class Location(
 ) : Parcelable {
 
     val javaTimeZone: java.util.TimeZone = java.util.TimeZone.getTimeZone(timeZone)
+    @SuppressLint("NewApi")
+    val zoneId: ZoneId = ZoneId.of(timeZone)
 
     val formattedId: String
         get() = if (isCurrentPosition) {
