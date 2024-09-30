@@ -8,10 +8,12 @@ import org.breezyweather.domain.weather.index.PollutantIndex
 fun AirQuality.getIndex(pollutant: PollutantIndex? = null): Int? {
     return if (pollutant == null) { // Air Quality
         val pollutantsAqi: List<Int> = listOfNotNull(
+            getIndex(PollutantIndex.PM25),
+            getIndex(PollutantIndex.PM10),
             getIndex(PollutantIndex.O3),
             getIndex(PollutantIndex.NO2),
-            getIndex(PollutantIndex.PM10),
-            getIndex(PollutantIndex.PM25)
+            getIndex(PollutantIndex.SO2),
+            getIndex(PollutantIndex.CO)
         )
         if (pollutantsAqi.isNotEmpty()) pollutantsAqi.max() else null
     } else { // Specific pollutant
@@ -30,7 +32,7 @@ fun AirQuality.getConcentration(pollutant: PollutantIndex) = when (pollutant) {
 
 fun AirQuality.getName(context: Context, pollutant: PollutantIndex? = null): String? {
     return if (pollutant == null) { // Air Quality
-        PollutantIndex.getAqiToName(context, getIndex())
+        PollutantIndex.getAqiToName(context, getIndex()?.toDouble())
     } else { // Specific pollutant
         pollutant.getName(context, getConcentration(pollutant))
     }
@@ -38,7 +40,7 @@ fun AirQuality.getName(context: Context, pollutant: PollutantIndex? = null): Str
 
 fun AirQuality.getDescription(context: Context, pollutant: PollutantIndex? = null): String? {
     return if (pollutant == null) { // Air Quality
-        PollutantIndex.getAqiToDescription(context, getIndex())
+        PollutantIndex.getAqiToDescription(context, getIndex()?.toDouble())
     } else { // Specific pollutant
         pollutant.getDescription(context, getConcentration(pollutant))
     }
@@ -47,7 +49,7 @@ fun AirQuality.getDescription(context: Context, pollutant: PollutantIndex? = nul
 @ColorInt
 fun AirQuality.getColor(context: Context, pollutant: PollutantIndex? = null): Int {
     return if (pollutant == null) {
-        PollutantIndex.getAqiToColor(context, getIndex())
+        PollutantIndex.getAqiToColor(context, getIndex()?.toDouble())
     } else { // Specific pollutant
         pollutant.getColor(context, getConcentration(pollutant))
     }
