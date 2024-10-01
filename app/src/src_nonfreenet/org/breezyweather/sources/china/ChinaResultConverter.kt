@@ -147,6 +147,7 @@ private fun getDailyList(
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
         }
+        val aqi = dailyForecast.aqi?.value?.getOrNull(index)
         dailyList.add(
             Daily(
                 date = calendar.time,
@@ -180,6 +181,7 @@ private fun getDailyList(
                         speed = dailyForecast.wind.speed?.value?.getOrNull(index)?.to?.toDoubleOrNull()?.div(3.6)
                     ) else null
                 ),
+                airQuality = if (aqi != null) AirQuality(reverseIndex(aqi), null, null, null, null, null) else null,
                 sun = Astro(
                     riseDate = dailyForecast.sunRiseSet?.value?.getOrNull(index)?.from,
                     setDate = dailyForecast.sunRiseSet?.value?.getOrNull(index)?.to
@@ -200,6 +202,31 @@ private fun getPrecipitationProbability(forecast: ChinaForecastDaily, index: Int
     return forecast.precipitationProbability.value.getOrNull(index)?.toDoubleOrNull()
 }
 
+private val pm25Thresholds = listOf(0f, 35f, 75f, 115f, 150f, 250f, 350f, 500f)
+private val aqiThresholds = listOf(0f, 50f, 100f, 150f, 200f, 300f, 400f, 500f)
+
+private fun reverseIndex(aqi: Int, bpLo: Float, bpHi: Float, inLo: Float, inHi: Float): Double {
+    return (aqi.toDouble() - inLo.toDouble()) * (bpHi.toDouble() - bpLo.toDouble()) / (inHi.toDouble() - inLo.toDouble()) + bpLo.toDouble()
+}
+
+
+private fun reverseIndex(aqi: Int?): Double? {
+    if (aqi == null || aqi <= 0) return null
+    val level = aqiThresholds.indexOfLast { aqi > it }
+    return if (level < aqiThresholds.lastIndex) {
+        reverseIndex(
+            aqi,
+            pm25Thresholds[level],
+            pm25Thresholds[level + 1],
+            aqiThresholds[level],
+            aqiThresholds[level + 1]
+        )
+    } else {
+        return aqi.toDouble() * pm25Thresholds.last().toDouble() / aqiThresholds.last().toDouble()
+    }
+}
+
+
 private fun getHourlyList(
     publishDate: Date,
     location: Location,
@@ -218,6 +245,7 @@ private fun getHourlyList(
             set(Calendar.MILLISECOND, 0)
         }
         val date = calendar.time
+        val aqi = hourlyForecast.aqi?.value?.getOrNull(index)
         hourlyList.add(
             HourlyWrapper(
                 date = date,
@@ -226,6 +254,7 @@ private fun getHourlyList(
                 temperature = Temperature(
                     temperature = hourlyForecast.temperature?.value?.getOrNull(index)?.toDouble()
                 ),
+                airQuality = if (aqi != null) AirQuality(reverseIndex(aqi), null, null, null, null, null) else null,
                 wind = if (hourlyForecast.wind != null) Wind(
                     degree = hourlyForecast.wind.value?.getOrNull(index)?.direction?.toDoubleOrNull(),
                     speed = hourlyForecast.wind.value?.getOrNull(index)?.speed?.toDoubleOrNull()?.div(3.6)
