@@ -25,5 +25,6 @@ data class ChinaForecastDaily(
     val sunRiseSet: ChinaSunRiseSet?,
     val temperature: ChinaValueListChinaFromTo?,
     val weather: ChinaValueListChinaFromTo?,
-    val wind: ChinaDailyWind?
+    val wind: ChinaDailyWind?,
+    val aqi: ChinaValueListInt?
 )
