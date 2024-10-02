@@ -60,6 +60,7 @@ class ChinaService @Inject constructor(
     }
 
     override val supportedFeaturesInMain = listOf(
+        SecondaryWeatherSourceFeature.FEATURE_REAL_TIME,
         SecondaryWeatherSourceFeature.FEATURE_AIR_QUALITY,
         SecondaryWeatherSourceFeature.FEATURE_MINUTELY,
         SecondaryWeatherSourceFeature.FEATURE_ALERT
@@ -112,9 +113,8 @@ class ChinaService @Inject constructor(
                 emitter.onNext(ChinaMinutelyResult())
             }
         }
-        return Observable.zip(mainly, minutely) {
-                mainlyResult: ChinaForecastResult,
-                minutelyResult: ChinaMinutelyResult
+        return Observable.zip(mainly, minutely) { mainlyResult: ChinaForecastResult,
+                                                  minutelyResult: ChinaMinutelyResult
             ->
             convert(
                 location,
@@ -126,15 +126,19 @@ class ChinaService @Inject constructor(
 
     // SECONDARY WEATHER SOURCE
     override val supportedFeaturesInSecondary = listOf(
+        SecondaryWeatherSourceFeature.FEATURE_REAL_TIME,
         SecondaryWeatherSourceFeature.FEATURE_AIR_QUALITY,
         SecondaryWeatherSourceFeature.FEATURE_MINUTELY,
         SecondaryWeatherSourceFeature.FEATURE_ALERT
     )
+
     override fun isFeatureSupportedInSecondaryForLocation(
         location: Location, feature: SecondaryWeatherSourceFeature
     ): Boolean {
         return isFeatureSupportedInMainForLocation(location, feature)
     }
+
+    override val realTimeAttribution = weatherAttribution
     override val airQualityAttribution = weatherAttribution
     override val pollenAttribution = null
     override val minutelyAttribution = weatherAttribution
@@ -156,8 +160,11 @@ class ChinaService @Inject constructor(
             }
         }
 
-        val mainly = if (requestedFeatures.contains(SecondaryWeatherSourceFeature.FEATURE_ALERT) ||
-            requestedFeatures.contains(SecondaryWeatherSourceFeature.FEATURE_AIR_QUALITY)) {
+        val mainly = if (requestedFeatures.contains(SecondaryWeatherSourceFeature.FEATURE_REAL_TIME) ||
+            requestedFeatures.contains(SecondaryWeatherSourceFeature.FEATURE_AIR_QUALITY) ||
+            requestedFeatures.contains(SecondaryWeatherSourceFeature.FEATURE_MINUTELY) ||
+            requestedFeatures.contains(SecondaryWeatherSourceFeature.FEATURE_ALERT)
+        ) {
             mApi.getForecastWeather(
                 location.latitude,
                 location.longitude,
@@ -191,9 +198,8 @@ class ChinaService @Inject constructor(
             }
         }
 
-        return Observable.zip(mainly, minutely) {
-                mainlyResult: ChinaForecastResult,
-                minutelyResult: ChinaMinutelyResult
+        return Observable.zip(mainly, minutely) { mainlyResult: ChinaForecastResult,
+                                                  minutelyResult: ChinaMinutelyResult
             ->
             convertSecondary(
                 location,
@@ -233,7 +239,8 @@ class ChinaService @Inject constructor(
             .map {
                 val locationList = mutableListOf<Location>()
                 if (it.getOrNull(0)?.locationKey?.startsWith("weathercn:") == true &&
-                    it[0].status == 0) {
+                    it[0].status == 0
+                ) {
                     locationList.add(convert(location, it[0]))
                 }
                 locationList
@@ -263,7 +270,8 @@ class ChinaService @Inject constructor(
             context.currentLocale.code
         ).map {
             if (it.getOrNull(0)?.locationKey?.startsWith("weathercn:") == true &&
-                it[0].status == 0) {
+                it[0].status == 0
+            ) {
                 mapOf(
                     "locationKey" to it[0].locationKey!!.replace("weathercn:", "")
                 )

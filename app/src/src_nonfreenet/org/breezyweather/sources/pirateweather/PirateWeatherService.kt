@@ -60,6 +60,7 @@ class PirateWeatherService @Inject constructor(
     }
 
     override val supportedFeaturesInMain = listOf(
+        SecondaryWeatherSourceFeature.FEATURE_REAL_TIME,
         SecondaryWeatherSourceFeature.FEATURE_MINUTELY,
         SecondaryWeatherSourceFeature.FEATURE_ALERT
     )
@@ -91,6 +92,7 @@ class PirateWeatherService @Inject constructor(
         SecondaryWeatherSourceFeature.FEATURE_MINUTELY,
         SecondaryWeatherSourceFeature.FEATURE_ALERT
     )
+    override val realTimeAttribution = null
     override val airQualityAttribution = null
     override val pollenAttribution = null
     override val minutelyAttribution = weatherAttribution

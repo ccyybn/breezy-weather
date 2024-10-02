@@ -133,6 +133,7 @@ class SourceManager @Inject constructor(
 
         with(location) {
             listOf(
+                Pair(realTimeSource, SecondaryWeatherSourceFeature.FEATURE_REAL_TIME),
                 Pair(airQualitySource, SecondaryWeatherSourceFeature.FEATURE_AIR_QUALITY),
                 Pair(pollenSource, SecondaryWeatherSourceFeature.FEATURE_POLLEN),
                 Pair(minutelySource, SecondaryWeatherSourceFeature.FEATURE_MINUTELY),

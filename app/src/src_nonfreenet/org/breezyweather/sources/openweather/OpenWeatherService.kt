@@ -68,6 +68,7 @@ class OpenWeatherService @Inject constructor(
     }
 
     override val supportedFeaturesInMain = listOf(
+        SecondaryWeatherSourceFeature.FEATURE_REAL_TIME,
         SecondaryWeatherSourceFeature.FEATURE_AIR_QUALITY
     )
 
@@ -134,6 +135,7 @@ class OpenWeatherService @Inject constructor(
     override val supportedFeaturesInSecondary = listOf(
         SecondaryWeatherSourceFeature.FEATURE_AIR_QUALITY
     )
+    override val realTimeAttribution = null
     override val airQualityAttribution = weatherAttribution
     override val pollenAttribution = null
     override val minutelyAttribution = null

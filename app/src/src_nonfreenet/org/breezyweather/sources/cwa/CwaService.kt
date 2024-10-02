@@ -75,6 +75,7 @@ class CwaService @Inject constructor(
     }
 
     override val supportedFeaturesInMain = listOf(
+        SecondaryWeatherSourceFeature.FEATURE_REAL_TIME,
         SecondaryWeatherSourceFeature.FEATURE_AIR_QUALITY,
         SecondaryWeatherSourceFeature.FEATURE_ALERT,
         SecondaryWeatherSourceFeature.FEATURE_NORMALS
@@ -205,6 +206,7 @@ class CwaService @Inject constructor(
     ): Boolean {
         return isFeatureSupportedInMainForLocation(location, feature)
     }
+    override val realTimeAttribution = null
     override val airQualityAttribution = "環境部"
     override val pollenAttribution = null
     override val minutelyAttribution = null

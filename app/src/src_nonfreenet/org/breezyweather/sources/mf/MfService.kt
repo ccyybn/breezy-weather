@@ -76,6 +76,7 @@ class MfService @Inject constructor(
     }
 
     override val supportedFeaturesInMain = listOf(
+        SecondaryWeatherSourceFeature.FEATURE_REAL_TIME,
         SecondaryWeatherSourceFeature.FEATURE_MINUTELY,
         SecondaryWeatherSourceFeature.FEATURE_ALERT,
         SecondaryWeatherSourceFeature.FEATURE_NORMALS
@@ -219,6 +220,7 @@ class MfService @Inject constructor(
             ) // Technically, works anywhere but as a France-focused source, we don’t want the whole
             // world to use this source, as currently the only alternative is AccuWeather
     }
+    override val realTimeAttribution = null
     override val airQualityAttribution = null
     override val pollenAttribution = null
     override val minutelyAttribution = weatherAttribution

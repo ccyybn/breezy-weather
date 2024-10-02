@@ -90,6 +90,7 @@ class AccuService @Inject constructor(
     }
 
     override val supportedFeaturesInMain = listOf(
+        SecondaryWeatherSourceFeature.FEATURE_REAL_TIME,
         SecondaryWeatherSourceFeature.FEATURE_AIR_QUALITY,
         SecondaryWeatherSourceFeature.FEATURE_POLLEN,
         SecondaryWeatherSourceFeature.FEATURE_MINUTELY,
@@ -275,6 +276,7 @@ class AccuService @Inject constructor(
     ): Boolean {
         return (isConfigured && portal == AccuPortalPreference.ENTERPRISE)
     }
+    override val realTimeAttribution = null
     override val airQualityAttribution = weatherAttribution
     override val pollenAttribution = weatherAttribution
     override val minutelyAttribution = weatherAttribution

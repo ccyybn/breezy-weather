@@ -33,6 +33,7 @@ import java.util.Locale
  */
 enum class LocationPreset(
     val main: String,
+    val realTime: String? = null,
     val airQuality: String? = null,
     val pollen: String? = null,
     val minutely: String? = null,
@@ -108,6 +109,7 @@ enum class LocationPreset(
 
             return location.copy(
                 weatherSource = locationPreset.main,
+                realTimeSource = locationPreset.realTime,
                 airQualitySource = locationPreset.airQuality,
                 pollenSource = locationPreset.pollen,
                 minutelySource = locationPreset.minutely,

@@ -317,6 +317,7 @@ class RefreshHelper @Inject constructor(
                 mutableMapOf()
             with(location) {
                 listOf(
+                    Pair(realTimeSource, SecondaryWeatherSourceFeature.FEATURE_REAL_TIME),
                     Pair(airQualitySource, SecondaryWeatherSourceFeature.FEATURE_AIR_QUALITY),
                     Pair(pollenSource, SecondaryWeatherSourceFeature.FEATURE_POLLEN),
                     Pair(minutelySource, SecondaryWeatherSourceFeature.FEATURE_MINUTELY),
@@ -346,8 +347,8 @@ class RefreshHelper @Inject constructor(
                 isMainDataValid = isWeatherDataStillValid(
                     location,
                     isRestricted = !BreezyWeather.instance.debugMode &&
-                        service is ConfigurableSource &&
-                        service.isRestricted,
+                            service is ConfigurableSource &&
+                            service.isRestricted,
                     minimumTime = languageUpdateTime
                 )
                 // If main data is still valid, let’s check if there are features inside main
@@ -361,8 +362,8 @@ class RefreshHelper @Inject constructor(
                                     location,
                                     it,
                                     isRestricted = !BreezyWeather.instance.debugMode &&
-                                        service is ConfigurableSource &&
-                                        service.isRestricted,
+                                            service is ConfigurableSource &&
+                                            service.isRestricted,
                                     minimumTime = languageUpdateTime
                                 )
                             ) {
@@ -393,15 +394,16 @@ class RefreshHelper @Inject constructor(
             } else {
                 try {
                     if (service is LocationParametersSource &&
-                        service.needsLocationParametersRefresh(location, coordinatesChanged)) {
+                        service.needsLocationParametersRefresh(location, coordinatesChanged)
+                    ) {
                         locationParameters[service.id] =
                             (if (locationParameters.getOrElse(service.id) { null } != null) {
                                 locationParameters[service.id]!!
                             } else emptyMap()) + service
-                            .requestLocationParameters(context, location.copy())
-                            .awaitFirstOrElse {
-                                throw WeatherException()
-                            }
+                                .requestLocationParameters(context, location.copy())
+                                .awaitFirstOrElse {
+                                    throw WeatherException()
+                                }
                     }
                     service
                         .requestWeather(
@@ -427,24 +429,34 @@ class RefreshHelper @Inject constructor(
                     )
                 }
             }
+            var realTimeUpdateTime = if (service.supportedFeaturesInMain.contains(SecondaryWeatherSourceFeature.FEATURE_REAL_TIME) &&
+                !mainFeaturesIgnored.contains(SecondaryWeatherSourceFeature.FEATURE_REAL_TIME)
+            ) {
+                Date()
+            } else base.realTimeUpdateTime
             var airQualityUpdateTime = if (service.supportedFeaturesInMain.contains(SecondaryWeatherSourceFeature.FEATURE_AIR_QUALITY) &&
-                !mainFeaturesIgnored.contains(SecondaryWeatherSourceFeature.FEATURE_AIR_QUALITY)) {
+                !mainFeaturesIgnored.contains(SecondaryWeatherSourceFeature.FEATURE_AIR_QUALITY)
+            ) {
                 Date()
             } else base.airQualityUpdateTime
             var pollenUpdateTime = if (service.supportedFeaturesInMain.contains(SecondaryWeatherSourceFeature.FEATURE_POLLEN) &&
-                !mainFeaturesIgnored.contains(SecondaryWeatherSourceFeature.FEATURE_POLLEN)) {
+                !mainFeaturesIgnored.contains(SecondaryWeatherSourceFeature.FEATURE_POLLEN)
+            ) {
                 Date()
             } else base.pollenUpdateTime
             var minutelyUpdateTime = if (service.supportedFeaturesInMain.contains(SecondaryWeatherSourceFeature.FEATURE_MINUTELY) &&
-                !mainFeaturesIgnored.contains(SecondaryWeatherSourceFeature.FEATURE_MINUTELY)) {
+                !mainFeaturesIgnored.contains(SecondaryWeatherSourceFeature.FEATURE_MINUTELY)
+            ) {
                 Date()
             } else base.minutelyUpdateTime
             var alertsUpdateTime = if (service.supportedFeaturesInMain.contains(SecondaryWeatherSourceFeature.FEATURE_ALERT) &&
-                !mainFeaturesIgnored.contains(SecondaryWeatherSourceFeature.FEATURE_ALERT)) {
+                !mainFeaturesIgnored.contains(SecondaryWeatherSourceFeature.FEATURE_ALERT)
+            ) {
                 Date()
             } else base.alertsUpdateTime
             var normalsUpdateTime = if (service.supportedFeaturesInMain.contains(SecondaryWeatherSourceFeature.FEATURE_NORMALS) &&
-                !mainFeaturesIgnored.contains(SecondaryWeatherSourceFeature.FEATURE_NORMALS)) {
+                !mainFeaturesIgnored.contains(SecondaryWeatherSourceFeature.FEATURE_NORMALS)
+            ) {
                 Date()
             } else base.normalsUpdateTime
 
@@ -474,8 +486,8 @@ class RefreshHelper @Inject constructor(
                                     location,
                                     it,
                                     isRestricted = !BreezyWeather.instance.debugMode &&
-                                        secondaryService is ConfigurableSource &&
-                                        secondaryService.isRestricted,
+                                            secondaryService is ConfigurableSource &&
+                                            secondaryService.isRestricted,
                                     minimumTime = languageUpdateTime
                                 )
                             }
@@ -499,15 +511,16 @@ class RefreshHelper @Inject constructor(
                                 }
                                 secondarySourceCalls[entry.key] = try {
                                     if (secondaryService is LocationParametersSource &&
-                                        secondaryService.needsLocationParametersRefresh(location, coordinatesChanged)) {
+                                        secondaryService.needsLocationParametersRefresh(location, coordinatesChanged)
+                                    ) {
                                         locationParameters[secondaryService.id] =
                                             (if (locationParameters.getOrElse(secondaryService.id) { null } != null) {
                                                 locationParameters[secondaryService.id]!!
                                             } else emptyMap()) + secondaryService
-                                            .requestLocationParameters(context, location.copy())
-                                            .awaitFirstOrElse {
-                                                throw WeatherException()
-                                            }
+                                                .requestLocationParameters(context, location.copy())
+                                                .awaitFirstOrElse {
+                                                    throw WeatherException()
+                                                }
                                     }
                                     secondaryService
                                         .requestSecondaryWeather(
@@ -539,6 +552,8 @@ class RefreshHelper @Inject constructor(
                 /**
                  * Make sure we return data from the correct secondary source
                  */
+                val isRealTimeRequested = !location.realTimeSource.isNullOrEmpty() && location.realTimeSource != location.weatherSource
+                val isMinutelyRequested = !location.minutelySource.isNullOrEmpty() && location.minutelySource != location.weatherSource
                 SecondaryWeatherWrapper(
                     airQuality = if (!location.airQualitySource.isNullOrEmpty() && location.airQualitySource != location.weatherSource) {
                         secondarySourceCalls.getOrElse(location.airQualitySource!!) { null }?.airQuality?.let {
@@ -552,7 +567,7 @@ class RefreshHelper @Inject constructor(
                             it
                         } ?: getPollenWrapperFromWeather(location.weather, yesterdayMidnight)
                     } else null,
-                    minutelyForecast = if (!location.minutelySource.isNullOrEmpty() && location.minutelySource != location.weatherSource) {
+                    minutelyForecast = if (isMinutelyRequested) {
                         secondarySourceCalls.getOrElse(location.minutelySource!!) { null }?.minutelyForecast?.let {
                             minutelyUpdateTime = Date()
                             it
@@ -569,7 +584,20 @@ class RefreshHelper @Inject constructor(
                             normalsUpdateTime = Date()
                             it
                         } ?: getNormalsFromWeather(location)
-                    } else null
+                    } else null,
+                    current = if (isRealTimeRequested && isMinutelyRequested) {
+                        secondarySourceCalls.getOrElse(location.realTimeSource!!) { null }?.current?.let {
+                            realTimeUpdateTime = Date()
+                            it.copy(hourlyForecast = secondarySourceCalls.getOrElse(location.minutelySource!!) { null }?.current?.hourlyForecast)
+                        }
+                    } else if (isRealTimeRequested) {
+                        secondarySourceCalls.getOrElse(location.realTimeSource!!) { null }?.current?.let {
+                            realTimeUpdateTime = Date()
+                            it
+                        }
+                    } else if (isMinutelyRequested) {
+                        secondarySourceCalls.getOrElse(location.minutelySource!!) { null }?.current
+                    } else null,
                 )
             } else null
 
@@ -615,6 +643,7 @@ class RefreshHelper @Inject constructor(
             val weather = Weather(
                 base = base.copy(
                     mainUpdateTime = if (isMainDataValid) base.mainUpdateTime else Date(),
+                    realTimeUpdateTime = realTimeUpdateTime,
                     airQualityUpdateTime = airQualityUpdateTime,
                     pollenUpdateTime = pollenUpdateTime,
                     minutelyUpdateTime = minutelyUpdateTime,
@@ -626,7 +655,8 @@ class RefreshHelper @Inject constructor(
                     currentHour,
                     currentDay,
                     secondaryWeatherWrapperCompleted?.airQuality?.current,
-                    location
+                    location,
+                    secondaryWeatherWrapper?.current
                 ),
                 normals = secondaryWeatherWrapper?.normals
                     ?: completeNormalsFromDaily(mainWeatherCompleted.normals, dailyForecast),
@@ -672,6 +702,7 @@ class RefreshHelper @Inject constructor(
                     }
                 }
             }
+
             is SocketTimeoutException -> RefreshErrorType.SERVER_TIMEOUT
             is ApiLimitReachedException -> RefreshErrorType.API_LIMIT_REACHED
             is ApiKeyMissingException -> RefreshErrorType.API_KEY_REQUIRED_MISSING
@@ -687,6 +718,7 @@ class RefreshHelper @Inject constructor(
                 e.printStackTrace()
                 RefreshErrorType.PARSING_ERROR
             }
+
             is SourceNotInstalledException -> RefreshErrorType.SOURCE_NOT_INSTALLED
             is LocationSearchException -> RefreshErrorType.LOCATION_SEARCH_FAILED
             is InvalidOrIncompleteDataException -> RefreshErrorType.INVALID_INCOMPLETE_DATA
@@ -954,6 +986,14 @@ class RefreshHelper @Inject constructor(
         if (location.weather?.base == null) return false
 
         when (feature) {
+            SecondaryWeatherSourceFeature.FEATURE_REAL_TIME -> {
+                return isUpdateStillValid(
+                    location.weather!!.base.realTimeUpdateTime,
+                    if (isRestricted) WAIT_REAL_TIME_RESTRICTED else WAIT_REAL_TIME,
+                    minimumTime
+                )
+            }
+
             SecondaryWeatherSourceFeature.FEATURE_AIR_QUALITY -> {
                 return isUpdateStillValid(
                     location.weather!!.base.airQualityUpdateTime,
@@ -961,6 +1001,7 @@ class RefreshHelper @Inject constructor(
                     minimumTime
                 )
             }
+
             SecondaryWeatherSourceFeature.FEATURE_POLLEN -> {
                 return isUpdateStillValid(
                     location.weather!!.base.pollenUpdateTime,
@@ -968,6 +1009,7 @@ class RefreshHelper @Inject constructor(
                     minimumTime
                 )
             }
+
             SecondaryWeatherSourceFeature.FEATURE_MINUTELY -> {
                 return isUpdateStillValid(
                     location.weather!!.base.minutelyUpdateTime,
@@ -979,6 +1021,7 @@ class RefreshHelper @Inject constructor(
                     minimumTime
                 )
             }
+
             SecondaryWeatherSourceFeature.FEATURE_ALERT -> {
                 return isUpdateStillValid(
                     location.weather!!.base.alertsUpdateTime,
@@ -990,6 +1033,7 @@ class RefreshHelper @Inject constructor(
                     minimumTime
                 )
             }
+
             SecondaryWeatherSourceFeature.FEATURE_NORMALS -> {
                 if (location.weather!!.base.normalsUpdateTime == null) return true
 
@@ -1004,6 +1048,7 @@ class RefreshHelper @Inject constructor(
                     return location.weather!!.normals!!.month == cal[Calendar.MONTH]
                 }
             }
+
             else -> {
                 return isUpdateStillValid(
                     location.weather!!.base.mainUpdateTime,
@@ -1034,6 +1079,8 @@ class RefreshHelper @Inject constructor(
 
         const val WAIT_MAIN = WAIT_REGULAR // 5 min
         const val WAIT_MAIN_RESTRICTED = WAIT_RESTRICTED // 15 min
+        const val WAIT_REAL_TIME = WAIT_REGULAR // 5 min
+        const val WAIT_REAL_TIME_RESTRICTED = WAIT_RESTRICTED // 1 hour
         const val WAIT_AIR_QUALITY = WAIT_REGULAR // 5 min
         const val WAIT_AIR_QUALITY_RESTRICTED = WAIT_ONE_HOUR // 1 hour
         const val WAIT_POLLEN = WAIT_REGULAR // 5 min

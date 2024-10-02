@@ -55,6 +55,7 @@ class NwsService @Inject constructor(
     }
 
     override val supportedFeaturesInMain = listOf(
+        SecondaryWeatherSourceFeature.FEATURE_REAL_TIME,
         SecondaryWeatherSourceFeature.FEATURE_ALERT
     )
 
@@ -133,6 +134,7 @@ class NwsService @Inject constructor(
     ): Boolean {
         return isFeatureSupportedInMainForLocation(location, feature)
     }
+    override val realTimeAttribution = null
     override val airQualityAttribution = null
     override val pollenAttribution = null
     override val minutelyAttribution = null

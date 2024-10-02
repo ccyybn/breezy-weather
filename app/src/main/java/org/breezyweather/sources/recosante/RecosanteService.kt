@@ -72,6 +72,7 @@ class RecosanteService @Inject constructor(
         return !location.countryCode.isNullOrEmpty()
             && location.countryCode.equals("FR", ignoreCase = true)
     }
+    override val realTimeAttribution = null
     override val airQualityAttribution = null
     override val pollenAttribution = "Recosanté, Le Réseau national de surveillance aérobiologique (RNSA) https://www.pollens.fr/"
     override val minutelyAttribution = null

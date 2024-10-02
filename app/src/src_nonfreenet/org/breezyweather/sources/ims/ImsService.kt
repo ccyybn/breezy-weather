@@ -62,6 +62,7 @@ class ImsService @Inject constructor(
     }
 
     override val supportedFeaturesInMain = listOf(
+        SecondaryWeatherSourceFeature.FEATURE_REAL_TIME,
         SecondaryWeatherSourceFeature.FEATURE_ALERT
     )
 
@@ -105,6 +106,7 @@ class ImsService @Inject constructor(
     ): Boolean {
         return isFeatureSupportedInMainForLocation(location, feature)
     }
+    override val realTimeAttribution = null
     override val airQualityAttribution = null
     override val pollenAttribution = null
     override val minutelyAttribution = null

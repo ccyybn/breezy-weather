@@ -8,6 +8,7 @@
     <string name="hourly_forecast">Hourly forecast</string>
     <!-- Nowcasting is a FORECAST of the next 2-3 hours, also called "immediate forecast" -->
     <string name="precipitation_nowcasting">Precipitation nowcasting</string>
+    <string name="real_time_weather">Real-time weather</string>
     <string name="air_quality">Air quality</string>
     <!-- We use it singular in English as in “Grass pollen” -->
     <string name="pollen">Pollen</string>
@@ -237,6 +238,7 @@
     <string name="ceiling_short">Ceiling</string>
     <!-- Weather sources -->
     <string name="weather_data_by">Data by %s</string>
+    <string name="weather_real_time_data_by">Real-time data by %s</string>
     <string name="weather_air_quality_data_by">Air quality data by %s</string>
     <string name="weather_pollen_data_by">Pollen data by %s</string>
     <string name="weather_air_quality_and_pollen_data_by">Air quality and pollen data by %s</string>

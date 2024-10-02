@@ -45,7 +45,7 @@ class SmhiService @Inject constructor(
             .create(SmhiApi::class.java)
     }
 
-    override val supportedFeaturesInMain = listOf<SecondaryWeatherSourceFeature>()
+    override val supportedFeaturesInMain = listOf(SecondaryWeatherSourceFeature.FEATURE_REAL_TIME)
 
     override fun isFeatureSupportedInMainForLocation(
         location: Location,
