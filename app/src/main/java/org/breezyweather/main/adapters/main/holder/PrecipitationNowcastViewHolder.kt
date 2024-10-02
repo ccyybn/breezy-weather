@@ -200,10 +200,11 @@ class PrecipitationNowcastViewHolder(
 
         val modelProducer = remember { CartesianChartModelProducer() }
 
-        val isTrendHorizontalLinesEnabled = SettingsManager.getInstance(context).isTrendHorizontalLinesEnabled
-        val thresholdLineColor = if (context.isDarkMode) {
-            R.color.colorTextGrey
-        } else R.color.colorTextGrey2nd
+        val isTrendHorizontalLinesEnabled = true
+        val lightTheme = MainThemeColorProvider.isLightTheme(itemView.context, location)
+        val thresholdLineColor = if (lightTheme) {
+            R.color.colorTextGrey2nd
+        } else R.color.colorTextGrey
 
         val cartesianLayerRangeProvider = CartesianLayerRangeProvider.fixed(
             maxY = maxY
@@ -286,7 +287,7 @@ class PrecipitationNowcastViewHolder(
                      * - Above 2 * heavy level: keep heavy line only
                      */
                     (maxY < Precipitation.PRECIPITATION_HOURLY_HEAVY * 2.0f).let {
-                        if (it && SettingsManager.getInstance(context).isTrendHorizontalLinesEnabled) {
+                        if (it && true) {
                             HorizontalLine(
                                 y = { Precipitation.PRECIPITATION_HOURLY_LIGHT },
                                 verticalLabelPosition = VerticalPosition.Bottom,
@@ -315,7 +316,7 @@ class PrecipitationNowcastViewHolder(
                             )
                         } else null
                     },
-                    if (SettingsManager.getInstance(context).isTrendHorizontalLinesEnabled) {
+                    if (true) {
                         HorizontalLine(
                             y = { Precipitation.PRECIPITATION_HOURLY_HEAVY },
                             verticalLabelPosition = VerticalPosition.Bottom,
