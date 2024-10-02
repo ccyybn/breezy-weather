@@ -75,6 +75,7 @@ class DailyViewHolder(
             itemAnimationEnabled,
             firstCard
         )
+        trendRecyclerView.mLocation = location
         location.weather?.let { weather ->
 
             val colors = ThemeManager

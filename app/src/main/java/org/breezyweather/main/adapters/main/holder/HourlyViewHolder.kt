@@ -73,7 +73,7 @@ class HourlyViewHolder(
             itemAnimationEnabled,
             firstCard
         )
-
+        trendRecyclerView.mLocation = location
         val weather = location.weather ?: return
         val colors = ThemeManager
             .getInstance(context)

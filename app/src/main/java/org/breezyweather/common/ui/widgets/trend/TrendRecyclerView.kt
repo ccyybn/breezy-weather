@@ -24,11 +24,13 @@ import android.util.AttributeSet
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import breezyweather.domain.location.model.Location
 import org.breezyweather.R
 import org.breezyweather.common.extensions.dpToPx
 import org.breezyweather.common.extensions.getTypefaceFromTextAppearance
 import org.breezyweather.common.extensions.isDarkMode
 import org.breezyweather.common.ui.widgets.trend.item.AbsTrendItemView
+import org.breezyweather.main.utils.MainThemeColorProvider
 
 /**
  * Trend recycler view.
@@ -52,6 +54,7 @@ class TrendRecyclerView @JvmOverloads constructor(
     private val mTextSize: Int
     private val mTextMargin: Int
     private val mLineWidth: Int
+    var mLocation: Location? = null
 
     class KeyLine(
         var value: Float,
@@ -95,6 +98,7 @@ class TrendRecyclerView @JvmOverloads constructor(
         }
         val dataRange = mHighestData!! - mLowestData!!
         val boundaryRange = (mDrawingBoundaryBottom - mDrawingBoundaryTop).toFloat()
+        val lightTheme = if (mLocation != null) MainThemeColorProvider.isLightTheme(this.context, mLocation) else !context.isDarkMode
         for (line in mKeyLineList!!) {
             if (line.value > mHighestData!! || line.value < mLowestData!!) {
                 continue
@@ -109,9 +113,9 @@ class TrendRecyclerView @JvmOverloads constructor(
             mPaint.apply {
                 style = Paint.Style.FILL
                 textSize = mTextSize.toFloat()
-                color = if (context.isDarkMode) {
-                    ContextCompat.getColor(context, R.color.colorTextGrey)
-                } else ContextCompat.getColor(context, R.color.colorTextGrey2nd)
+                color = if (lightTheme) {
+                    ContextCompat.getColor(context, R.color.colorTextGrey2nd)
+                } else ContextCompat.getColor(context, R.color.colorTextGrey)
             }
             when (line.contentPosition) {
                 TrendRecyclerView.KeyLine.ContentPosition.ABOVE_LINE -> {
@@ -124,15 +128,15 @@ class TrendRecyclerView @JvmOverloads constructor(
                             mPaint
                         )
                     }
-                    if (!line.contentRight.isNullOrEmpty()) {
-                        mPaint.textAlign = Paint.Align.RIGHT
-                        canvas.drawText(
-                            line.contentRight!!,
-                            (measuredWidth - 2 * mTextMargin).toFloat(),
-                            y - mPaint.fontMetrics.bottom - mTextMargin,
-                            mPaint
-                        )
-                    }
+//                    if (!line.contentRight.isNullOrEmpty()) {
+//                        mPaint.textAlign = Paint.Align.RIGHT
+//                        canvas.drawText(
+//                            line.contentRight!!,
+//                            (measuredWidth - 2 * mTextMargin).toFloat(),
+//                            y - mPaint.fontMetrics.bottom - mTextMargin,
+//                            mPaint
+//                        )
+//                    }
                 }
 
                 TrendRecyclerView.KeyLine.ContentPosition.BELOW_LINE -> {
@@ -145,15 +149,15 @@ class TrendRecyclerView @JvmOverloads constructor(
                             mPaint
                         )
                     }
-                    if (!line.contentRight.isNullOrEmpty()) {
-                        mPaint.textAlign = Paint.Align.RIGHT
-                        canvas.drawText(
-                            line.contentRight!!,
-                            (measuredWidth - 2 * mTextMargin).toFloat(),
-                            y - mPaint.fontMetrics.top + mTextMargin,
-                            mPaint
-                        )
-                    }
+//                    if (!line.contentRight.isNullOrEmpty()) {
+//                        mPaint.textAlign = Paint.Align.RIGHT
+//                        canvas.drawText(
+//                            line.contentRight!!,
+//                            (measuredWidth - 2 * mTextMargin).toFloat(),
+//                            y - mPaint.fontMetrics.top + mTextMargin,
+//                            mPaint
+//                        )
+//                    }
                 }
             }
         }
