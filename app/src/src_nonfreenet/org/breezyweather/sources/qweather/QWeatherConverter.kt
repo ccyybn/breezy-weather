@@ -231,11 +231,14 @@ private fun getHourlyList(
 }
 
 fun convertSecondary(
+    nowResult: QWeatherNowResult,
     airResult: QWeatherAirResult,
     warningResult: QWeatherWarningResult,
-    minutelyResult: QWeatherMinuteResult
+    minutelyResult: QWeatherMinuteResult,
+    lang: String
 ): SecondaryWeatherWrapper {
-    if (airResult.code != null && airResult.code != "200" ||
+    if (nowResult.code != null && nowResult.code != "200" ||
+        airResult.code != null && airResult.code != "200" ||
         warningResult.code != null && warningResult.code != "200" ||
         minutelyResult.code != null && minutelyResult.code != "200"
     ) {
@@ -256,6 +259,24 @@ fun convertSecondary(
         },
         alertList = getWarningList(warningResult),
         minutelyForecast = getMinutelyList(minutelyResult),
+        current = Current(
+            hourlyForecast = minutelyResult.summary,
+            weatherText = getWeatherText(nowResult.now?.icon, nowResult.now?.text, lang),
+            weatherCode = getWeatherCode(nowResult.now?.icon),
+            temperature = Temperature(
+                temperature = nowResult.now?.temp?.toDouble(),
+                realFeelTemperature = nowResult.now?.feelsLike?.toDouble()
+            ),
+            relativeHumidity = nowResult.now?.humidity?.toDouble(),
+            pressure = nowResult.now?.pressure?.toDouble(),
+            wind = Wind(
+                degree = nowResult.now?.wind360?.toDouble(),
+                speed = nowResult.now?.windSpeed?.toDouble()?.div(3.6)
+            ),
+            visibility = nowResult.now?.vis?.toDouble()?.times(1000),
+            dewPoint = nowResult.now?.dew?.toDouble(),
+            cloudCover = nowResult.now?.cloud?.toInt()
+        )
     )
 }
 

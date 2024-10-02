@@ -61,6 +61,7 @@ class GeoSphereAtService @Inject constructor(
     }
 
     override val supportedFeaturesInMain = listOf(
+        SecondaryWeatherSourceFeature.FEATURE_REAL_TIME,
         SecondaryWeatherSourceFeature.FEATURE_AIR_QUALITY,
         SecondaryWeatherSourceFeature.FEATURE_MINUTELY,
         SecondaryWeatherSourceFeature.FEATURE_ALERT
@@ -168,6 +169,7 @@ class GeoSphereAtService @Inject constructor(
     ): Boolean {
         return isFeatureSupportedInMainForLocation(location, feature)
     }
+    override val realTimeAttribution = null
     override val airQualityAttribution = weatherAttribution
     override val pollenAttribution = null
     override val minutelyAttribution = weatherAttribution

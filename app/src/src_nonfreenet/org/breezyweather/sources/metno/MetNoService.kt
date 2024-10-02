@@ -58,6 +58,7 @@ class MetNoService @Inject constructor(
     }
 
     override val supportedFeaturesInMain = listOf(
+        SecondaryWeatherSourceFeature.FEATURE_REAL_TIME,
         SecondaryWeatherSourceFeature.FEATURE_AIR_QUALITY,
         SecondaryWeatherSourceFeature.FEATURE_MINUTELY,
         SecondaryWeatherSourceFeature.FEATURE_ALERT
@@ -205,6 +206,7 @@ class MetNoService @Inject constructor(
                 location.countryCode.equals("NO", ignoreCase = true)
             )
     }
+    override val realTimeAttribution = null
     override val airQualityAttribution = weatherAttribution
     override val pollenAttribution = null
     override val minutelyAttribution = weatherAttribution

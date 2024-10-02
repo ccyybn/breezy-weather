@@ -56,6 +56,7 @@ data class Location(
 
     val weather: Weather? = null,
     val weatherSource: String = "openmeteo",
+    val realTimeSource: String? = null,
     val airQualitySource: String? = null,
     val pollenSource: String? = null,
     val minutelySource: String? = null,
@@ -112,6 +113,7 @@ data class Location(
         parcel.writeString(city)
         parcel.writeString(district)
         parcel.writeString(weatherSource)
+        parcel.writeString(realTimeSource)
         parcel.writeString(airQualitySource)
         parcel.writeString(pollenSource)
         parcel.writeString(minutelySource)
@@ -143,6 +145,7 @@ data class Location(
         city = parcel.readString()!!,
         district = parcel.readString(),
         weatherSource = parcel.readString()!!,
+        realTimeSource = parcel.readString(),
         airQualitySource = parcel.readString(),
         pollenSource = parcel.readString(),
         minutelySource = parcel.readString(),
@@ -167,6 +170,10 @@ data class Location(
         }
 
         if (weatherSource != other.weatherSource) {
+            return false
+        }
+
+        if (realTimeSource != other.realTimeSource) {
             return false
         }
 
@@ -303,6 +310,8 @@ data class Location(
         }
     }
 
+    val realTimeSourceNotNull: String
+        get() = if (realTimeSource.isNullOrEmpty()) weatherSource else realTimeSource
     val airQualitySourceNotNull: String
         get() = if (airQualitySource.isNullOrEmpty()) weatherSource else airQualitySource
     val pollenSourceNotNull: String

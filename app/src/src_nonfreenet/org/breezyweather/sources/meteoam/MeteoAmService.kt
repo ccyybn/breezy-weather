@@ -53,7 +53,7 @@ class MeteoAmService @Inject constructor(
             .create(MeteoAmApi::class.java)
     }
 
-    override val supportedFeaturesInMain = listOf<SecondaryWeatherSourceFeature>()
+    override val supportedFeaturesInMain = listOf(SecondaryWeatherSourceFeature.FEATURE_REAL_TIME)
 
     @SuppressLint("CheckResult")
     override fun requestWeather(

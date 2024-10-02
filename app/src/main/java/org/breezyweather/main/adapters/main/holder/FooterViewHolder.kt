@@ -67,6 +67,7 @@ class FooterViewHolder(
         val distinctSources = mutableMapOf<String, Source?>()
         listOf(
             location.weatherSource,
+            location.realTimeSourceNotNull,
             location.airQualitySourceNotNull,
             location.pollenSourceNotNull,
             location.minutelySourceNotNull,
@@ -79,6 +80,10 @@ class FooterViewHolder(
         val credits = mutableMapOf<String, String?>()
         credits["weather"] = if (distinctSources[location.weatherSource] is MainWeatherSource) {
             (distinctSources[location.weatherSource] as MainWeatherSource).weatherAttribution
+        } else null
+        credits["realTime"] = if (distinctSources[location.realTimeSourceNotNull] is SecondaryWeatherSource &&
+            (distinctSources[location.realTimeSourceNotNull] as SecondaryWeatherSource).realTimeAttribution != credits["weather"]) {
+            (distinctSources[location.realTimeSourceNotNull] as SecondaryWeatherSource).realTimeAttribution
         } else null
         credits["minutely"] = if (distinctSources[location.minutelySourceNotNull] is SecondaryWeatherSource &&
             (distinctSources[location.minutelySourceNotNull] as SecondaryWeatherSource).minutelyAttribution != credits["weather"]) {
@@ -109,6 +114,12 @@ class FooterViewHolder(
                     credits["weather"] ?: context.getString(R.string.null_data_text)
                 )
             )
+            if (!credits["realTime"].isNullOrEmpty()) {
+                creditsText.append(
+                    "\n" +
+                            context.getString(R.string.weather_real_time_data_by, credits["realTime"]!!)
+                )
+            }
             if (weather.minutelyForecast.isNotEmpty() &&
                 !credits["minutely"].isNullOrEmpty()) {
                 creditsText.append(
@@ -182,7 +193,6 @@ class FooterViewHolder(
         creditsText: String, cardMarginsVertical: Int
     ) {
         var expand by remember { mutableStateOf(false) }
-
         val paddingTop = dimensionResource(R.dimen.little_margin) - cardMarginsVertical.dp
         Row(
             modifier = Modifier

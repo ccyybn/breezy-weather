@@ -121,6 +121,7 @@ class OpenMeteoService @Inject constructor(
     )
 
     override val supportedFeaturesInMain = listOf(
+        SecondaryWeatherSourceFeature.FEATURE_REAL_TIME,
         SecondaryWeatherSourceFeature.FEATURE_AIR_QUALITY,
         SecondaryWeatherSourceFeature.FEATURE_POLLEN,
         SecondaryWeatherSourceFeature.FEATURE_MINUTELY
@@ -240,6 +241,7 @@ class OpenMeteoService @Inject constructor(
         SecondaryWeatherSourceFeature.FEATURE_POLLEN,
         SecondaryWeatherSourceFeature.FEATURE_MINUTELY
     )
+    override val realTimeAttribution = null
     override val airQualityAttribution =
         "Open-Meteo (CC BY 4.0) / METEO FRANCE, Institut national de l'environnement industriel et des risques (Ineris), Aarhus University, Norwegian Meteorological Institute (MET Norway), Jülich Institut für Energie- und Klimaforschung (IEK), Institute of Environmental Protection – National Research Institute (IEP-NRI), Koninklijk Nederlands Meteorologisch Instituut (KNMI), Nederlandse Organisatie voor toegepast-natuurwetenschappelijk onderzoek (TNO), Swedish Meteorological and Hydrological Institute (SMHI), Finnish Meteorological Institute (FMI), Italian National Agency for New Technologies, Energy and Sustainable Economic Development (ENEA) and Barcelona Supercomputing Center (BSC) (2022): CAMS European air quality forecasts, ENSEMBLE data. Copernicus Atmosphere Monitoring Service (CAMS) Atmosphere Data Store (ADS). (Updated twice daily)."
     override val pollenAttribution = airQualityAttribution

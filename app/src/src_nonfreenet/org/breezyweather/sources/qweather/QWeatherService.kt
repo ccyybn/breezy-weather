@@ -62,6 +62,7 @@ class QWeatherService @Inject constructor(
     override val color = Color.rgb(24, 106, 194)
 
     override val weatherAttribution = "QWeather"
+    override val realTimeAttribution = "QWeather"
     override val airQualityAttribution = "QWeather"
     override val pollenAttribution = null
     override val minutelyAttribution = "QWeather"
@@ -70,12 +71,14 @@ class QWeatherService @Inject constructor(
     override val locationSearchAttribution = "QWeather"
 
     override val supportedFeaturesInMain = listOf(
+        SecondaryWeatherSourceFeature.FEATURE_REAL_TIME,
         SecondaryWeatherSourceFeature.FEATURE_AIR_QUALITY,
         SecondaryWeatherSourceFeature.FEATURE_MINUTELY,
         SecondaryWeatherSourceFeature.FEATURE_ALERT
     )
 
     override val supportedFeaturesInSecondary = listOf(
+        SecondaryWeatherSourceFeature.FEATURE_REAL_TIME,
         SecondaryWeatherSourceFeature.FEATURE_AIR_QUALITY,
         SecondaryWeatherSourceFeature.FEATURE_ALERT,
         SecondaryWeatherSourceFeature.FEATURE_MINUTELY
@@ -152,8 +155,14 @@ class QWeatherService @Inject constructor(
         val daily = mApi.getWeather7d(location.cityId!!, apiKey, lang)
         val hourly = mApi.getWeather24h(location.cityId!!, apiKey, lang)
         val airDaily = mApi.getAir5d(location.cityId!!, apiKey, lang)
-        val now = mApi.getWeatherNow(location.cityId!!, apiKey, lang)
 
+        val now = if (!ignoreFeatures.contains(SecondaryWeatherSourceFeature.FEATURE_REAL_TIME)) {
+            mApi.getWeatherNow(location.cityId!!, apiKey, lang)
+        } else {
+            Observable.create { emitter ->
+                emitter.onNext(QWeatherNowResult())
+            }
+        }
         val air = if (!ignoreFeatures.contains(SecondaryWeatherSourceFeature.FEATURE_AIR_QUALITY)) {
             mApi.getAirNow(location.cityId!!, apiKey, lang)
         } else {
@@ -208,6 +217,13 @@ class QWeatherService @Inject constructor(
         val apiKey = getApiKeyOrDefault()
         val lang = getLanguage(context)
 
+        val now = if (requestedFeatures.contains(SecondaryWeatherSourceFeature.FEATURE_REAL_TIME)) {
+            mApi.getWeatherNow(location.cityId!!, apiKey, lang)
+        } else {
+            Observable.create { emitter ->
+                emitter.onNext(QWeatherNowResult())
+            }
+        }
         val air = if (requestedFeatures.contains(SecondaryWeatherSourceFeature.FEATURE_AIR_QUALITY)) {
             mApi.getAirNow(location.cityId!!, apiKey, lang)
         } else {
@@ -230,15 +246,18 @@ class QWeatherService @Inject constructor(
             }
         }
 
-        return Observable.zip(air, warning, minutely) {
+        return Observable.zip(now, air, warning, minutely) {
+                nowResult: QWeatherNowResult,
                 airResult: QWeatherAirResult,
                 warningResult: QWeatherWarningResult,
                 minutelyResult: QWeatherMinuteResult,
             ->
             convertSecondary(
+                nowResult,
                 airResult,
                 warningResult,
-                minutelyResult
+                minutelyResult,
+                lang
             )
         }
     }

@@ -17,6 +17,7 @@
 package breezyweather.domain.weather.wrappers
 
 import breezyweather.domain.weather.model.Alert
+import breezyweather.domain.weather.model.Current
 import breezyweather.domain.weather.model.Minutely
 import breezyweather.domain.weather.model.Normals
 
@@ -28,5 +29,6 @@ data class SecondaryWeatherWrapper(
     val pollen: PollenWrapper? = null,
     val minutelyForecast: List<Minutely>? = null,
     val alertList: List<Alert>? = null,
-    val normals: Normals? = null
+    val normals: Normals? = null,
+    val current: Current?=null
 )

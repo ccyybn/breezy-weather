@@ -55,6 +55,7 @@ class DmiService @Inject constructor(
     }
 
     override val supportedFeaturesInMain = listOf(
+        SecondaryWeatherSourceFeature.FEATURE_REAL_TIME,
         SecondaryWeatherSourceFeature.FEATURE_ALERT
     )
 
@@ -104,6 +105,7 @@ class DmiService @Inject constructor(
     ): Boolean {
         return location.countryCode.equals("DK", ignoreCase = true)
     }
+    override val realTimeAttribution = null
     override val airQualityAttribution = null
     override val pollenAttribution = null
     override val minutelyAttribution = null
