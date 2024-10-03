@@ -40,9 +40,9 @@ import org.breezyweather.common.exceptions.InvalidOrIncompleteDataException
 import org.breezyweather.common.extensions.toCalendarWithTimeZone
 import org.breezyweather.sources.china.json.ChinaForecastDaily
 import org.breezyweather.sources.china.json.ChinaForecastHourly
+import org.breezyweather.sources.china.json.ChinaForecastMinutely
 import org.breezyweather.sources.china.json.ChinaForecastResult
 import org.breezyweather.sources.china.json.ChinaLocationResult
-import org.breezyweather.sources.china.json.ChinaMinutelyResult
 import java.util.Calendar
 import java.util.Date
 import java.util.Objects
@@ -67,8 +67,7 @@ fun convert(
 
 fun convert(
     location: Location,
-    forecastResult: ChinaForecastResult,
-    minutelyResult: ChinaMinutelyResult
+    forecastResult: ChinaForecastResult
 ): WeatherWrapper {
     // If the API doesn’t return current, hourly or daily, consider data as garbage and keep cached data
     if (forecastResult.current == null || forecastResult.forecastDaily == null || forecastResult.forecastHourly == null) {
@@ -109,8 +108,8 @@ fun convert(
             visibility = if (!forecastResult.current.visibility?.value.isNullOrEmpty()) {
                 forecastResult.current.visibility!!.value!!.toDoubleOrNull()?.times(1000)
             } else null,
-            hourlyForecast = if (minutelyResult.precipitation != null) {
-                minutelyResult.precipitation.description
+            hourlyForecast = if (forecastResult.minutely?.precipitation != null) {
+                forecastResult.minutely.precipitation.description
             } else null
         ),
         dailyForecast = getDailyList(
@@ -125,7 +124,7 @@ fun convert(
         ),
         minutelyForecast = getMinutelyList(
             location,
-            minutelyResult
+            forecastResult.minutely
         ),
         alertList = getAlertList(forecastResult)
     )
@@ -267,9 +266,9 @@ private fun getHourlyList(
 
 private fun getMinutelyList(
     location: Location,
-    minutelyResult: ChinaMinutelyResult
+    minutelyResult: ChinaForecastMinutely?
 ): List<Minutely> {
-    if (minutelyResult.precipitation == null || minutelyResult.precipitation.value.isNullOrEmpty()) return emptyList()
+    if (minutelyResult?.precipitation == null || minutelyResult.precipitation.value.isNullOrEmpty()) return emptyList()
 
     val current = minutelyResult.precipitation.pubTime ?: return emptyList()
     val minutelyList: MutableList<Minutely> = ArrayList(minutelyResult.precipitation.value.size)
@@ -301,7 +300,7 @@ private fun getAlertList(result: ChinaForecastResult): List<Alert> {
             startDate = alert.pubTime,
             headline = getHeadLine(alert.title, alert.detail),
             description = alert.detail,
-            severity = getAlertPriority(alert.level),
+            severity = getAlertSeverity(alert.level),
             color = getAlertColor(alert.level)
         )
     }.sortedWith(compareByDescending<Alert> { it.severity.id }.thenByDescending(Alert::startDate))
@@ -340,8 +339,7 @@ private fun getHeadLine(title: String?, description: String?): String? {
 
 fun convertSecondary(
     location: Location,
-    forecastResult: ChinaForecastResult,
-    minutelyResult: ChinaMinutelyResult
+    forecastResult: ChinaForecastResult
 ): SecondaryWeatherWrapper {
 
     return SecondaryWeatherWrapper(
@@ -357,7 +355,7 @@ fun convertSecondary(
                 )
             )
         },
-        minutelyForecast = getMinutelyList(location, minutelyResult),
+        minutelyForecast = getMinutelyList(location, forecastResult.minutely),
         alertList = getAlertList(forecastResult),
     )
 }
@@ -429,7 +427,7 @@ private fun getWeatherCode(icon: String?): WeatherCode? {
     }
 }
 
-private fun getAlertPriority(color: String?): AlertSeverity {
+private fun getAlertSeverity(color: String?): AlertSeverity {
     if (color.isNullOrEmpty()) return AlertSeverity.UNKNOWN
     return when (color) {
         "蓝", "蓝色" -> AlertSeverity.MINOR
