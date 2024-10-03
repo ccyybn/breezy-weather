@@ -561,7 +561,7 @@ fun SecondarySourcesPreference(
                         val newLocation = location.copy(
                             // Reset cityId when changing source as they are linked to source
                             // Also reset secondary weather sources which are the new main source
-                            cityId = if (hasChangedMainSource.value) "" else location.cityId,
+                            cityId = location.cityId,
                             weatherSource = weatherSource.value,
                             currentSource = if (hasChangedMainSource.value && currentSource.value == weatherSource.value) "" else currentSource.value,
                             airQualitySource = if (hasChangedMainSource.value && airQualitySource.value == weatherSource.value) "" else airQualitySource.value,
