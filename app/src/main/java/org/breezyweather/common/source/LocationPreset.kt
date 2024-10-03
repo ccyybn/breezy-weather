@@ -108,7 +108,7 @@ enum class LocationPreset(
             val locationPreset = getLocationPreset(location.countryCode)
 
             return location.copy(
-                weatherSource = locationPreset.main,
+                weatherSource = if (location.weatherSource != "openmeteo") location.weatherSource else locationPreset.main,
                 realTimeSource = locationPreset.realTime,
                 airQualitySource = locationPreset.airQuality,
                 pollenSource = locationPreset.pollen,
