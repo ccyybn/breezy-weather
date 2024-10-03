@@ -356,6 +356,9 @@ fun convertSecondary(
 
     return SecondaryWeatherWrapper(
         current = getCurrent(forecastResult.current, forecastResult.aqi, forecastResult.minutely),
+        precipitation = if (forecastResult.minutely?.precipitation != null) {
+            forecastResult.minutely.precipitation.description
+        } else null,
         airQuality = forecastResult.aqi?.let {
             AirQualityWrapper(
                 current = AirQuality(
