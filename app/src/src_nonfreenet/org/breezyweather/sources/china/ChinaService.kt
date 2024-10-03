@@ -23,11 +23,9 @@ import breezyweather.domain.weather.wrappers.SecondaryWeatherWrapper
 import breezyweather.domain.weather.wrappers.WeatherWrapper
 import io.reactivex.rxjava3.core.Observable
 import org.breezyweather.common.exceptions.InvalidLocationException
-import org.breezyweather.common.exceptions.ReverseGeocodingException
 import org.breezyweather.common.extensions.code
 import org.breezyweather.common.extensions.currentLocale
 import org.breezyweather.common.source.HttpSource
-import org.breezyweather.common.source.LocationParametersSource
 import org.breezyweather.common.source.LocationSearchSource
 import org.breezyweather.common.source.MainWeatherSource
 import org.breezyweather.common.source.ReverseGeocodingSource
@@ -40,8 +38,7 @@ import javax.inject.Named
 
 class ChinaService @Inject constructor(
     @Named("JsonClient") client: Retrofit.Builder
-) : HttpSource(), MainWeatherSource, SecondaryWeatherSource,
-    LocationSearchSource, ReverseGeocodingSource, LocationParametersSource {
+) : HttpSource(), MainWeatherSource, SecondaryWeatherSource, LocationSearchSource, ReverseGeocodingSource {
 
     override val id = "china"
     override val name = "China"
@@ -75,22 +72,15 @@ class ChinaService @Inject constructor(
     override fun requestWeather(
         context: Context, location: Location, ignoreFeatures: List<SecondaryWeatherSourceFeature>
     ): Observable<WeatherWrapper> {
-        val locationKey = location.parameters
-            .getOrElse(id) { null }?.getOrElse("locationKey") { null }
-
-        if (locationKey.isNullOrEmpty()) {
-            return if (location.isCurrentPosition) {
-                Observable.error(ReverseGeocodingException())
-            } else {
-                Observable.error(InvalidLocationException())
-            }
+        if (location.cityId.isNullOrEmpty()) {
+            return Observable.error(InvalidLocationException())
         }
 
         val mainly = mApi.getForecastWeather(
             location.latitude,
             location.longitude,
             location.isCurrentPosition,
-            locationKey = "weathercn%3A$locationKey",
+            locationKey = "weathercn%3A$${location.cityId}",
             days = 15,
             appKey = CHINA_APP_KEY,
             sign = CHINA_SIGN,
@@ -129,25 +119,20 @@ class ChinaService @Inject constructor(
         context: Context, location: Location,
         requestedFeatures: List<SecondaryWeatherSourceFeature>
     ): Observable<SecondaryWeatherWrapper> {
-        val locationKey = location.parameters
-            .getOrElse(id) { null }?.getOrElse("locationKey") { null }
-
-        if (locationKey.isNullOrEmpty()) {
-            return if (location.isCurrentPosition) {
-                Observable.error(ReverseGeocodingException())
-            } else {
-                Observable.error(InvalidLocationException())
-            }
+        if (location.cityId.isNullOrEmpty()) {
+            return Observable.error(InvalidLocationException())
         }
 
         val mainly = if (requestedFeatures.contains(SecondaryWeatherSourceFeature.FEATURE_ALERT) ||
             requestedFeatures.contains(SecondaryWeatherSourceFeature.FEATURE_AIR_QUALITY) ||
-            requestedFeatures.contains(SecondaryWeatherSourceFeature.FEATURE_CURRENT)) {
+            requestedFeatures.contains(SecondaryWeatherSourceFeature.FEATURE_MINUTELY) ||
+            requestedFeatures.contains(SecondaryWeatherSourceFeature.FEATURE_CURRENT)
+        ) {
             mApi.getForecastWeather(
                 location.latitude,
                 location.longitude,
                 location.isCurrentPosition,
-                locationKey = "weathercn%3A$locationKey",
+                locationKey = "weathercn%3A${location.cityId}",
                 days = 15,
                 appKey = CHINA_APP_KEY,
                 sign = CHINA_SIGN,
@@ -204,43 +189,6 @@ class ChinaService @Inject constructor(
                 }
                 locationList
             }
-    }
-
-    // Location parameters
-    override fun needsLocationParametersRefresh(
-        location: Location,
-        coordinatesChanged: Boolean,
-        features: List<SecondaryWeatherSourceFeature>
-    ): Boolean {
-        if (coordinatesChanged) return true
-
-        val currentLocationKey = location.parameters
-            .getOrElse(id) { null }?.getOrElse("locationKey") { null }
-
-        return currentLocationKey.isNullOrEmpty()
-    }
-
-    override fun requestLocationParameters(
-        context: Context, location: Location
-    ): Observable<Map<String, String>> {
-        if (location.cityId != null) {
-            return Observable.just(mapOf("locationKey" to location.cityId!!))
-        }
-        return mApi.getLocationByGeoPosition(
-            location.latitude,
-            location.longitude,
-            context.currentLocale.code
-        ).map {
-            if (it.getOrNull(0)?.locationKey?.startsWith("weathercn:") == true &&
-                it[0].status == 0
-            ) {
-                mapOf(
-                    "locationKey" to it[0].locationKey!!.replace("weathercn:", "")
-                )
-            } else {
-                throw InvalidLocationException()
-            }
-        }
     }
 
     companion object {
