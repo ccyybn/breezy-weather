@@ -34,7 +34,6 @@ import org.breezyweather.common.source.ReverseGeocodingSource
 import org.breezyweather.common.source.SecondaryWeatherSource
 import org.breezyweather.common.source.SecondaryWeatherSourceFeature
 import org.breezyweather.sources.china.json.ChinaForecastResult
-import org.breezyweather.sources.china.json.ChinaMinutelyResult
 import retrofit2.Retrofit
 import javax.inject.Inject
 import javax.inject.Named
@@ -98,29 +97,10 @@ class ChinaService @Inject constructor(
             isGlobal = false,
             context.currentLocale.toString().lowercase()
         )
-        val minutely = if (!ignoreFeatures.contains(SecondaryWeatherSourceFeature.FEATURE_MINUTELY)) {
-            mApi.getMinutelyWeather(
-                location.latitude,
-                location.longitude,
-                context.currentLocale.toString().lowercase(),
-                isGlobal = false,
-                appKey = CHINA_APP_KEY,
-                locationKey = "weathercn%3A$locationKey",
-                sign = CHINA_SIGN
-            )
-        } else {
-            Observable.create { emitter ->
-                emitter.onNext(ChinaMinutelyResult())
-            }
-        }
-        return Observable.zip(mainly, minutely) {
-                mainlyResult: ChinaForecastResult,
-                minutelyResult: ChinaMinutelyResult
-            ->
+        return mainly.map { mainlyResult ->
             convert(
                 location,
-                mainlyResult,
-                minutelyResult
+                mainlyResult
             )
         }
     }
@@ -132,6 +112,7 @@ class ChinaService @Inject constructor(
         SecondaryWeatherSourceFeature.FEATURE_MINUTELY,
         SecondaryWeatherSourceFeature.FEATURE_ALERT
     )
+
     override fun isFeatureSupportedInSecondaryForLocation(
         location: Location, feature: SecondaryWeatherSourceFeature
     ): Boolean {
@@ -179,30 +160,10 @@ class ChinaService @Inject constructor(
             }
         }
 
-        val minutely = if (requestedFeatures.contains(SecondaryWeatherSourceFeature.FEATURE_MINUTELY)) {
-            mApi.getMinutelyWeather(
-                location.latitude,
-                location.longitude,
-                context.currentLocale.toString().lowercase(),
-                isGlobal = false,
-                appKey = CHINA_APP_KEY,
-                locationKey = "weathercn%3A$locationKey",
-                sign = CHINA_SIGN
-            )
-        } else {
-            Observable.create { emitter ->
-                emitter.onNext(ChinaMinutelyResult())
-            }
-        }
-
-        return Observable.zip(mainly, minutely) {
-                mainlyResult: ChinaForecastResult,
-                minutelyResult: ChinaMinutelyResult
-            ->
+        return mainly.map { mainlyResult ->
             convertSecondary(
                 location,
-                mainlyResult,
-                minutelyResult
+                mainlyResult
             )
         }
     }
@@ -237,7 +198,8 @@ class ChinaService @Inject constructor(
             .map {
                 val locationList = mutableListOf<Location>()
                 if (it.getOrNull(0)?.locationKey?.startsWith("weathercn:") == true &&
-                    it[0].status == 0) {
+                    it[0].status == 0
+                ) {
                     locationList.add(convert(location, it[0]))
                 }
                 locationList
@@ -261,13 +223,17 @@ class ChinaService @Inject constructor(
     override fun requestLocationParameters(
         context: Context, location: Location
     ): Observable<Map<String, String>> {
+        if (location.cityId != null) {
+            return Observable.just(mapOf("locationKey" to location.cityId!!))
+        }
         return mApi.getLocationByGeoPosition(
             location.latitude,
             location.longitude,
             context.currentLocale.code
         ).map {
             if (it.getOrNull(0)?.locationKey?.startsWith("weathercn:") == true &&
-                it[0].status == 0) {
+                it[0].status == 0
+            ) {
                 mapOf(
                     "locationKey" to it[0].locationKey!!.replace("weathercn:", "")
                 )

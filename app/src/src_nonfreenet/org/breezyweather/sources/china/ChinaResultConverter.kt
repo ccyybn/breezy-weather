@@ -42,9 +42,9 @@ import org.breezyweather.sources.china.json.ChinaAqi
 import org.breezyweather.sources.china.json.ChinaCurrent
 import org.breezyweather.sources.china.json.ChinaForecastDaily
 import org.breezyweather.sources.china.json.ChinaForecastHourly
+import org.breezyweather.sources.china.json.ChinaForecastMinutely
 import org.breezyweather.sources.china.json.ChinaForecastResult
 import org.breezyweather.sources.china.json.ChinaLocationResult
-import org.breezyweather.sources.china.json.ChinaMinutelyResult
 import java.util.Calendar
 import java.util.Date
 import java.util.Objects
@@ -69,8 +69,7 @@ fun convert(
 
 fun convert(
     location: Location,
-    forecastResult: ChinaForecastResult,
-    minutelyResult: ChinaMinutelyResult
+    forecastResult: ChinaForecastResult
 ): WeatherWrapper {
     // If the API doesn’t return current, hourly or daily, consider data as garbage and keep cached data
     if (forecastResult.current == null || forecastResult.forecastDaily == null || forecastResult.forecastHourly == null) {
@@ -78,7 +77,7 @@ fun convert(
     }
 
     return WeatherWrapper(
-        current = getCurrent(forecastResult.current, forecastResult.aqi, minutelyResult),
+        current = getCurrent(forecastResult.current, forecastResult.aqi, forecastResult.minutely),
         dailyForecast = getDailyList(
             forecastResult.current.pubTime,
             location,
@@ -91,7 +90,7 @@ fun convert(
         ),
         minutelyForecast = getMinutelyList(
             location,
-            minutelyResult
+            forecastResult.minutely
         ),
         alertList = getAlertList(forecastResult)
     )
@@ -100,7 +99,7 @@ fun convert(
 fun getCurrent(
     current: ChinaCurrent?,
     aqi: ChinaAqi?,
-    minutelyResult: ChinaMinutelyResult? = null
+    minutelyResult: ChinaForecastMinutely?
 ): Current? {
     if (current == null) return null
 
@@ -279,9 +278,9 @@ private fun getHourlyList(
 
 private fun getMinutelyList(
     location: Location,
-    minutelyResult: ChinaMinutelyResult
+    minutelyResult: ChinaForecastMinutely?
 ): List<Minutely> {
-    if (minutelyResult.precipitation == null || minutelyResult.precipitation.value.isNullOrEmpty()) return emptyList()
+    if (minutelyResult?.precipitation == null || minutelyResult.precipitation.value.isNullOrEmpty()) return emptyList()
 
     val current = minutelyResult.precipitation.pubTime ?: return emptyList()
     val minutelyList: MutableList<Minutely> = ArrayList(minutelyResult.precipitation.value.size)
@@ -313,7 +312,7 @@ private fun getAlertList(result: ChinaForecastResult): List<Alert> {
             startDate = alert.pubTime,
             headline = getHeadLine(alert.title, alert.detail),
             description = alert.detail,
-            severity = getAlertPriority(alert.level),
+            severity = getAlertSeverity(alert.level),
             color = getAlertColor(alert.level) ?: Alert.colorFromSeverity(AlertSeverity.UNKNOWN)
         )
     }.sortedWith(compareByDescending<Alert> { it.severity.id }.thenByDescending(Alert::startDate))
@@ -352,12 +351,11 @@ private fun getHeadLine(title: String?, description: String?): String? {
 
 fun convertSecondary(
     location: Location,
-    forecastResult: ChinaForecastResult,
-    minutelyResult: ChinaMinutelyResult
+    forecastResult: ChinaForecastResult
 ): SecondaryWeatherWrapper {
 
     return SecondaryWeatherWrapper(
-        current = getCurrent(forecastResult.current, forecastResult.aqi),
+        current = getCurrent(forecastResult.current, forecastResult.aqi, forecastResult.minutely),
         airQuality = forecastResult.aqi?.let {
             AirQualityWrapper(
                 current = AirQuality(
@@ -370,7 +368,7 @@ fun convertSecondary(
                 )
             )
         },
-        minutelyForecast = getMinutelyList(location, minutelyResult),
+        minutelyForecast = getMinutelyList(location, forecastResult.minutely),
         alertList = getAlertList(forecastResult),
     )
 }
@@ -442,7 +440,7 @@ private fun getWeatherCode(icon: String?): WeatherCode? {
     }
 }
 
-private fun getAlertPriority(color: String?): AlertSeverity {
+private fun getAlertSeverity(color: String?): AlertSeverity {
     if (color.isNullOrEmpty()) return AlertSeverity.UNKNOWN
     return when (color) {
         "蓝", "蓝色" -> AlertSeverity.MINOR
