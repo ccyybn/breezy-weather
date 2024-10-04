@@ -34,6 +34,7 @@ import org.breezyweather.daily.adapter.DailyWeatherAdapter
 import org.breezyweather.daily.adapter.model.DailyAstro
 import org.breezyweather.domain.weather.model.getDescription
 import org.breezyweather.theme.ThemeManager
+import kotlin.time.Duration.Companion.days
 
 class AstroHolder(parent: ViewGroup) : DailyWeatherAdapter.ViewHolder(
     LayoutInflater.from(parent.context)
@@ -73,15 +74,22 @@ class AstroHolder(parent: ViewGroup) : DailyWeatherAdapter.ViewHolder(
                     )
                 )
             mSun.visibility = View.VISIBLE
-            mSunText.text = if (BreezyWeather.instance.debugMode) {
-                (model.sun.riseDate?.getFormattedDate("yyyy-MM-dd HH:mm", location, context) ?: context.getString(R.string.null_data_text)) + "↑ / " +
-                    (model.sun.setDate?.getFormattedDate("yyyy-MM-dd HH:mm", location, context) ?: context.getString(R.string.null_data_text)) + "↓" +
-                    (model.sun.duration?.let { " / " + DurationUnit.H.getValueText(context, it) } ?: "")
-            } else {
-                (model.sun.riseDate?.getFormattedTime(location, context, context.is12Hour) ?: context.getString(R.string.null_data_text)) + "↑ / " +
-                    (model.sun.setDate?.getFormattedTime(location, context, context.is12Hour) ?: context.getString(R.string.null_data_text)) + "↓" +
-                    (model.sun.duration?.let { " / " + DurationUnit.H.getValueText(context, it) } ?: "")
+
+            var riseText = context.getString(R.string.null_data_text)
+            var setText = context.getString(R.string.null_data_text)
+            if (model.sun.riseDate != null) {
+                riseText = model.sun.riseDate!!.getFormattedTime(location, context, context.is12Hour)
+                if (model.sun.riseDate!! < model.date) {
+                    riseText = context.getString(R.string.yesterday) + " " + riseText
+                }
             }
+            if (model.sun.setDate != null) {
+                setText = model.sun.setDate!!.getFormattedTime(location, context, context.is12Hour)
+                if (model.sun.setDate!!.time >= model.date.time + 1.days.inWholeMilliseconds) {
+                    setText = context.getString(R.string.tomorrow) + " " + setText
+                }
+            }
+            mSunText.text = "$riseText↑ / $setText↓" + (model.sun.duration?.let { " / " + DurationUnit.H.getValueText(context, it) } ?: "")
         } else {
             mSun.visibility = View.GONE
         }
@@ -102,11 +110,21 @@ class AstroHolder(parent: ViewGroup) : DailyWeatherAdapter.ViewHolder(
                     )
                 )
             mMoon.visibility = View.VISIBLE
-            mMoonText.text = if (BreezyWeather.instance.debugMode) {
-                (model.moon.riseDate?.getFormattedDate("yyyy-MM-dd HH:mm", location, context) ?: context.getString(R.string.null_data_text)) + "↑ / " + (model.moon.setDate?.getFormattedDate("yyyy-MM-dd HH:mm", location, context) ?: context.getString(R.string.null_data_text)) + "↓"
-            } else {
-                (model.moon.riseDate?.getFormattedTime(location, context, context.is12Hour) ?: context.getString(R.string.null_data_text)) + "↑ / " + (model.moon.setDate?.getFormattedTime(location, context, context.is12Hour) ?: context.getString(R.string.null_data_text)) + "↓"
+            var riseText = context.getString(R.string.null_data_text)
+            var setText = context.getString(R.string.null_data_text)
+            if (model.moon.riseDate != null) {
+                riseText = model.moon.riseDate!!.getFormattedTime(location, context, context.is12Hour)
+                if (model.moon.riseDate!! < model.date) {
+                    riseText = context.getString(R.string.yesterday) + " " + riseText
+                }
             }
+            if (model.moon.setDate != null) {
+                setText = model.moon.setDate!!.getFormattedTime(location, context, context.is12Hour)
+                if (model.moon.setDate!!.time >= model.date.time + 1.days.inWholeMilliseconds) {
+                    setText = context.getString(R.string.tomorrow) + " " + setText
+                }
+            }
+            mMoonText.text = "$riseText↑ / $setText↓" + (model.moon.duration?.let { " / " + DurationUnit.H.getValueText(context, it) } ?: "")
         } else {
             mMoon.visibility = View.GONE
         }

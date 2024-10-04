@@ -149,7 +149,7 @@ class DailyWeatherAdapter(
         }
         if (daily.sun?.isValid == true || daily.moon?.isValid == true || daily.moonPhase?.isValid == true) {
             mModelList.add(LargeTitle(activity.getString(R.string.ephemeris)))
-            mModelList.add(DailyAstro(location, daily.sun, daily.moon, daily.moonPhase))
+            mModelList.add(DailyAstro(location, daily.date, daily.sun, daily.moon, daily.moonPhase))
         }
         if (daily.degreeDay?.isValid == true || daily.sunshineDuration != null) {
             mModelList.add(Line())

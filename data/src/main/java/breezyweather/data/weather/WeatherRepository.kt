@@ -232,10 +232,14 @@ class WeatherRepository(
                     // sun.
                     sunRiseDate = daily.sun?.riseDate?.time,
                     sunSetDate = daily.sun?.setDate?.time,
+                    sunRiseDatePre = daily.sun?.riseDatePre?.time,
+                    sunSetDatePre = daily.sun?.setDatePre?.time,
 
                     // moon.
                     moonRiseDate = daily.moon?.riseDate?.time,
                     moonSetDate = daily.moon?.setDate?.time,
+                    moonRiseDatePre = daily.moon?.riseDatePre?.time,
+                    moonSetDatePre = daily.moon?.setDatePre?.time,
 
                     // moon phase.
                     moonPhaseAngle = daily.moonPhase?.angle?.toLong(),
