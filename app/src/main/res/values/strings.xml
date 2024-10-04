@@ -25,6 +25,8 @@
     <string name="short_yesterday">Yda</string>
     <string name="short_today">Today</string>
     <string name="short_tomorrow">Tmw</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="tomorrow">Tomorrow</string>
     <string name="of_clock">:00</string>
     <!-- Temperature -->
     <string name="temperature">Temperature</string>

@@ -176,8 +176,12 @@ object WeatherMapper {
         degreeDayCooling: Double?,
         sunRiseDate: Long?,
         sunSetDate: Long?,
+        sunRiseDatePre: Long?,
+        sunSetDatePre: Long?,
         moonRiseDate: Long?,
         moonSetDate: Long?,
+        moonRiseDatePre: Long?,
+        moonSetDatePre: Long?,
         moonPhaseAngle: Long?,
         pm25: Double?,
         pm10: Double?,
@@ -289,8 +293,8 @@ object WeatherMapper {
             nighttimeCloudCover?.toInt()
         ),
         DegreeDay(degreeDayHeating, degreeDayCooling),
-        Astro(sunRiseDate?.let { Date(it) }, sunSetDate?.let { Date(it) }),
-        Astro(moonRiseDate?.let { Date(it) }, moonSetDate?.let { Date(it) }),
+        Astro(sunRiseDate?.let { Date(it) }, sunSetDate?.let { Date(it) }, sunRiseDatePre?.let { Date(it) }, sunSetDatePre?.let { Date(it) }),
+        Astro(moonRiseDate?.let { Date(it) }, moonSetDate?.let { Date(it) }, moonRiseDatePre?.let { Date(it) }, moonSetDatePre?.let { Date(it) }),
         MoonPhase(moonPhaseAngle?.toInt()),
         AirQuality(
             pm25,
