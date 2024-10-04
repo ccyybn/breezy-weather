@@ -48,6 +48,7 @@ import java.util.Calendar
 import java.util.TimeZone
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.time.Duration.Companion.days
 
 class AstroViewHolder(parent: ViewGroup) : AbstractMainCardViewHolder(
     LayoutInflater
@@ -168,9 +169,21 @@ class AstroViewHolder(parent: ViewGroup) : AbstractMainCardViewHolder(
         }
 
         mWeather?.today?.sun?.let { sun ->
-            if (sun.isValid) {
-                val sunriseTime = sun.riseDate!!.getFormattedTime(location, context, context.is12Hour)
-                val sunsetTime = sun.setDate!!.getFormattedTime(location, context, context.is12Hour)
+            if (sun.isValid || sun.isPreValid) {
+                var sunriseTime: String
+                var sunsetTime: String
+
+                if (!sun.isValid || (sun.riseDatePre != null && sun.setDatePre != null && mCurrentTimes[0] < sun.setDatePre!!.time)) {
+                    sunriseTime = sun.riseDatePre!!.getFormattedTime(location, context, context.is12Hour)
+                    sunsetTime = sun.setDatePre!!.getFormattedTime(location, context, context.is12Hour)
+                    if (sun.riseDatePre!! < mWeather?.today?.date) sunriseTime = context.getString(R.string.short_yesterday) + " " + sunriseTime
+                    if (sun.setDatePre!!.time >= mWeather?.today?.date?.time!! + 1.days.inWholeMilliseconds) sunsetTime = context.getString(R.string.short_tomorrow) + " " + sunsetTime
+                } else {
+                    sunriseTime = sun.riseDate!!.getFormattedTime(location, context, context.is12Hour)
+                    sunsetTime = sun.setDate!!.getFormattedTime(location, context, context.is12Hour)
+                    if (sun.riseDate!! < mWeather?.today?.date) sunriseTime = context.getString(R.string.short_yesterday) + " " + sunriseTime
+                    if (sun.setDate!!.time >= mWeather?.today?.date?.time!! + 1.days.inWholeMilliseconds) sunsetTime = context.getString(R.string.short_tomorrow) + " " + sunsetTime
+                }
                 mSunContainer.visibility = View.VISIBLE
                 mSunTxt.text = sunriseTime + "↑" + "\n" + sunsetTime + "↓"
                 talkBackBuilder
@@ -186,9 +199,20 @@ class AstroViewHolder(parent: ViewGroup) : AbstractMainCardViewHolder(
         }
 
         mWeather?.today?.moon?.let { moon ->
-            if (moon.isValid) {
-                val moonriseTime = moon.riseDate!!.getFormattedTime(location, context, context.is12Hour)
-                val moonsetTime = moon.setDate!!.getFormattedTime(location, context, context.is12Hour)
+            if (moon.isValid || moon.isPreValid) {
+                var moonriseTime: String
+                var moonsetTime: String
+                if (!moon.isValid || (moon.riseDatePre != null && moon.setDatePre != null && mCurrentTimes[1] < moon.setDatePre!!.time)) {
+                    moonriseTime = moon.riseDatePre!!.getFormattedTime(location, context, context.is12Hour)
+                    moonsetTime = moon.setDatePre!!.getFormattedTime(location, context, context.is12Hour)
+                    if (moon.riseDatePre!! < mWeather?.today?.date) moonriseTime = context.getString(R.string.short_yesterday) + " " + moonriseTime
+                    if (moon.setDatePre!!.time >= mWeather?.today?.date?.time!! + 1.days.inWholeMilliseconds) moonsetTime = context.getString(R.string.short_tomorrow) + " " + moonsetTime
+                } else {
+                    moonriseTime = moon.riseDate!!.getFormattedTime(location, context, context.is12Hour)
+                    moonsetTime = moon.setDate!!.getFormattedTime(location, context, context.is12Hour)
+                    if (moon.riseDate!! < mWeather?.today?.date) moonriseTime = context.getString(R.string.short_yesterday) + " " + moonriseTime
+                    if (moon.setDate!!.time >= mWeather?.today?.date?.time!! + 1.days.inWholeMilliseconds) moonsetTime = context.getString(R.string.short_tomorrow) + " " + moonsetTime
+                }
                 mMoonContainer.visibility = View.VISIBLE
                 mMoonTxt.text = moonriseTime + "↑" + "\n" + moonsetTime + "↓"
                 talkBackBuilder
@@ -282,8 +306,13 @@ class AstroViewHolder(parent: ViewGroup) : AbstractMainCardViewHolder(
 
         // sun.
         if (weather.today?.sun?.riseDate != null && weather.today!!.sun!!.setDate != null) {
-            mStartTimes[0] = weather.today!!.sun!!.riseDate!!.time
-            mEndTimes[0] = weather.today!!.sun!!.setDate!!.time
+            if (weather.today?.sun?.riseDatePre != null && weather.today?.sun?.setDatePre != null && currentTime < weather.today?.sun?.setDatePre!!.time) {
+                mStartTimes[0] = weather.today!!.sun!!.riseDatePre!!.time
+                mEndTimes[0] = weather.today!!.sun!!.setDatePre!!.time
+            } else {
+                mStartTimes[0] = weather.today!!.sun!!.riseDate!!.time
+                mEndTimes[0] = weather.today!!.sun!!.setDate!!.time
+            }
         } else {
             mStartTimes[0] = currentTime + 1
             mEndTimes[0] = currentTime + 1
@@ -291,14 +320,25 @@ class AstroViewHolder(parent: ViewGroup) : AbstractMainCardViewHolder(
 
         // moon.
         if (weather.today?.moon?.riseDate != null && weather.today!!.moon!!.setDate != null) {
-            mStartTimes[1] = weather.today!!.moon!!.riseDate!!.time
-            mEndTimes[1] = weather.today!!.moon!!.setDate!!.time
+            if (weather.today?.moon?.riseDatePre != null && weather.today?.moon?.setDatePre != null && currentTime < weather.today?.moon?.setDatePre!!.time) {
+                mStartTimes[1] = weather.today!!.moon!!.riseDatePre!!.time
+                mEndTimes[1] = weather.today!!.moon!!.setDatePre!!.time
+            } else {
+                mStartTimes[1] = weather.today!!.moon!!.riseDate!!.time
+                mEndTimes[1] = weather.today!!.moon!!.setDate!!.time
+            }
         } else {
             mStartTimes[1] = currentTime + 1
             mEndTimes[1] = currentTime + 1
         }
-        if (mCurrentTimes[0] > mEndTimes[0]) mCurrentTimes[0] = mEndTimes[0]
-        if (mCurrentTimes[1] > mEndTimes[1]) mCurrentTimes[1] = mEndTimes[1]
+        if (mCurrentTimes[0] > mEndTimes[0]) {
+            mStartTimes[0] = currentTime + 1
+            mEndTimes[0] = currentTime + 1
+        }
+        if (mCurrentTimes[1] > mEndTimes[1]) {
+            mStartTimes[1] = currentTime + 1
+            mEndTimes[1] = currentTime + 1
+        }
         mAnimCurrentTimes = longArrayOf(mCurrentTimes[0], mCurrentTimes[1])
     }
 

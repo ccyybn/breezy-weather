@@ -95,20 +95,20 @@ class MainAdapter(
                     continue
                 }
                 if (c === CardDisplay.CARD_SUNRISE_SUNSET &&
-                    (weather.dailyForecast.isEmpty() || weather.today?.sun?.isValid != true)
+                    (weather.dailyForecast.isEmpty() || (weather.today?.sun?.isValid != true && weather.today?.moon?.isValid != true && weather.today?.sun?.isPreValid != true && weather.today?.moon?.isPreValid != true))
                 ) {
                     continue
                 }
                 if (c === CardDisplay.CARD_LIVE &&
                     (weather.current == null ||
-                        (DetailsViewHolder.availableDetails(
-                            activity,
-                            SettingsManager.getInstance(activity).detailDisplayList,
-                            SettingsManager.getInstance(activity).detailDisplayUnlisted,
-                            weather.current!!,
-                            location.isDaylight
-                        )).isEmpty()
-                    )
+                            (DetailsViewHolder.availableDetails(
+                                activity,
+                                SettingsManager.getInstance(activity).detailDisplayList,
+                                SettingsManager.getInstance(activity).detailDisplayUnlisted,
+                                weather.current!!,
+                                location.isDaylight
+                            )).isEmpty()
+                            )
                 ) {
                     continue
                 }

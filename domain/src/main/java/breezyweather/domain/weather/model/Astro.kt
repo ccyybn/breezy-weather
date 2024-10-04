@@ -21,7 +21,9 @@ import java.util.Date
 
 class Astro(
     val riseDate: Date? = null,
-    val setDate: Date? = null
+    val setDate: Date? = null,
+    val riseDatePre: Date? = null,
+    val setDatePre: Date? = null
 ) : Serializable {
 
     // Not made to be used for moon astro, only sun
@@ -40,4 +42,7 @@ class Astro(
         }
     val isValid: Boolean
         get() = riseDate != null && setDate != null
+
+    val isPreValid: Boolean
+        get() = riseDatePre != null && setDatePre != null
 }
