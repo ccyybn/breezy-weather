@@ -16,6 +16,7 @@
 
 package org.breezyweather.sources.china
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import androidx.annotation.ColorInt
 import breezyweather.domain.location.model.Location
@@ -37,7 +38,8 @@ import breezyweather.domain.weather.wrappers.HourlyWrapper
 import breezyweather.domain.weather.wrappers.SecondaryWeatherWrapper
 import breezyweather.domain.weather.wrappers.WeatherWrapper
 import org.breezyweather.common.exceptions.InvalidOrIncompleteDataException
-import org.breezyweather.common.extensions.toCalendarWithTimeZone
+import org.breezyweather.common.extensions.toDate
+import org.breezyweather.common.extensions.toLocalDateTime
 import org.breezyweather.sources.china.json.ChinaAqi
 import org.breezyweather.sources.china.json.ChinaCurrent
 import org.breezyweather.sources.china.json.ChinaForecastDaily
@@ -45,7 +47,7 @@ import org.breezyweather.sources.china.json.ChinaForecastHourly
 import org.breezyweather.sources.china.json.ChinaForecastMinutely
 import org.breezyweather.sources.china.json.ChinaForecastResult
 import org.breezyweather.sources.china.json.ChinaLocationResult
-import java.util.Calendar
+import java.time.LocalTime
 import java.util.Date
 import java.util.Objects
 import java.util.regex.Pattern
@@ -142,26 +144,22 @@ fun getCurrent(
     )
 }
 
+@SuppressLint("NewApi")
 private fun getDailyList(
     publishDate: Date,
     location: Location,
     dailyForecast: ChinaForecastDaily
 ): List<Daily> {
     if (dailyForecast.weather == null || dailyForecast.weather.value.isNullOrEmpty()) return emptyList()
-
     val dailyList: MutableList<Daily> = ArrayList(dailyForecast.weather.value.size)
+    val localDateTime = publishDate.toLocalDateTime(location.zoneId)
+
     dailyForecast.weather.value.forEachIndexed { index, weather ->
-        val calendar = publishDate.toCalendarWithTimeZone(location.javaTimeZone).apply {
-            add(Calendar.DAY_OF_YEAR, index)
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }
+        val startOfDay = localDateTime.with(LocalTime.MIN).plusDays(index.toLong())
         val aqi = dailyForecast.aqi?.value?.getOrNull(index)
         dailyList.add(
             Daily(
-                date = calendar.time,
+                date = startOfDay.toDate(location.zoneId),
                 day = HalfDay(
                     weatherText = getWeatherText(weather.from),
                     weatherPhase = getWeatherText(weather.from),
@@ -238,6 +236,7 @@ private fun reverseIndex(aqi: Int?): Double? {
 }
 
 
+@SuppressLint("NewApi")
 private fun getHourlyList(
     publishDate: Date,
     location: Location,
@@ -246,20 +245,15 @@ private fun getHourlyList(
     if (hourlyForecast.weather == null || hourlyForecast.weather.value.isNullOrEmpty()) return emptyList()
 
     val hourlyListPubTime = hourlyForecast.temperature?.pubTime ?: publishDate
+    val localDateTime = hourlyListPubTime.toLocalDateTime(location.zoneId)
 
     val hourlyList: MutableList<HourlyWrapper> = ArrayList(hourlyForecast.weather.value.size)
     hourlyForecast.weather.value.forEachIndexed { index, weather ->
-        val calendar = hourlyListPubTime.toCalendarWithTimeZone(location.javaTimeZone).apply {
-            add(Calendar.HOUR_OF_DAY, index) // FIXME: Wrong TimeZone for the first item
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }
-        val date = calendar.time
+        val time = localDateTime.withMinute(0).withSecond(0).withNano(0).plusHours(index.toLong())
         val aqi = hourlyForecast.aqi?.value?.getOrNull(index)
         hourlyList.add(
             HourlyWrapper(
-                date = date,
+                date = time.toDate(location.zoneId),
                 weatherText = getWeatherText(weather.toString()),
                 weatherCode = getWeatherCode(weather.toString()),
                 temperature = Temperature(
@@ -276,24 +270,21 @@ private fun getHourlyList(
     return hourlyList
 }
 
+@SuppressLint("NewApi")
 private fun getMinutelyList(
     location: Location,
     minutelyResult: ChinaForecastMinutely?
 ): List<Minutely> {
     if (minutelyResult?.precipitation == null || minutelyResult.precipitation.value.isNullOrEmpty()) return emptyList()
-
     val current = minutelyResult.precipitation.pubTime ?: return emptyList()
+    val localDateTime = current.toLocalDateTime(location.zoneId)
     val minutelyList: MutableList<Minutely> = ArrayList(minutelyResult.precipitation.value.size)
 
     minutelyResult.precipitation.value.forEachIndexed { minute, precipitation ->
-        val calendar = current.toCalendarWithTimeZone(location.javaTimeZone).apply {
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-            add(Calendar.MINUTE, minute)
-        }
+        val time = localDateTime.withSecond(0).withNano(0).plusMinutes(minute.toLong())
         minutelyList.add(
             Minutely(
-                date = calendar.time,
+                date = time.toDate(location.zoneId),
                 minuteInterval = 1,
                 precipitationIntensity = precipitation.times(60) // mm/min -> mm/h
             )
@@ -353,7 +344,9 @@ fun convertSecondary(
     location: Location,
     forecastResult: ChinaForecastResult
 ): SecondaryWeatherWrapper {
-
+    if (forecastResult.current == null || forecastResult.forecastDaily == null || forecastResult.forecastHourly == null) {
+        throw InvalidOrIncompleteDataException()
+    }
     return SecondaryWeatherWrapper(
         current = getCurrent(forecastResult.current, forecastResult.aqi, forecastResult.minutely),
         precipitation = if (forecastResult.minutely?.precipitation != null) {
@@ -372,7 +365,7 @@ fun convertSecondary(
             )
         },
         minutelyForecast = getMinutelyList(location, forecastResult.minutely),
-        alertList = getAlertList(forecastResult),
+        alertList = getAlertList(forecastResult)
     )
 }
 
