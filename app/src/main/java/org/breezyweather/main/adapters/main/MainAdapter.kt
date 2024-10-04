@@ -95,7 +95,7 @@ class MainAdapter(
                     continue
                 }
                 if (c === CardDisplay.CARD_SUNRISE_SUNSET &&
-                    (weather.dailyForecast.isEmpty() || weather.today?.sun?.isValid != true)
+                    (weather.dailyForecast.isEmpty() || (weather.today?.sun?.isValid != true && weather.today?.moon?.isValid != true))
                 ) {
                     continue
                 }

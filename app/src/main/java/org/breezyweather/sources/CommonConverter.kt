@@ -16,6 +16,8 @@
 
 package org.breezyweather.sources
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import breezyweather.domain.location.model.Location
 import breezyweather.domain.weather.model.AirQuality
 import breezyweather.domain.weather.model.Alert
@@ -46,12 +48,17 @@ import org.breezyweather.common.extensions.median
 import org.breezyweather.common.extensions.toCalendarWithTimeZone
 import org.breezyweather.common.extensions.toDate
 import org.breezyweather.common.extensions.toDateNoHour
+import org.breezyweather.common.extensions.toLocalDateTime
 import org.breezyweather.theme.weatherView.WeatherViewController
 import org.shredzone.commons.suncalc.MoonIllumination
 import org.shredzone.commons.suncalc.MoonTimes
 import org.shredzone.commons.suncalc.SunTimes
+import java.text.SimpleDateFormat
+import java.time.Duration
+import java.time.ZoneId
 import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 import java.util.TimeZone
 import kotlin.math.atan
 import kotlin.math.exp
@@ -563,6 +570,7 @@ private fun computeWetBulbTemperature(temperature: Double?, relativeHumidity: Do
  * @param hourlyList hourly data
  * @param location for timeZone and calculation of sunrise/set according to lon/lat purposes
  */
+@RequiresApi(Build.VERSION_CODES.O)
 fun completeDailyListFromHourlyList(
     dailyList: List<Daily>,
     hourlyList: List<HourlyWrapper>,
@@ -595,7 +603,7 @@ fun completeDailyListFromHourlyList(
         val newSun = if (daily.sun?.isValid == true) {
             // We check that the sunrise is indeed between 00:00 and 23:59 that day
             // (many sources unfortunately return next day!)
-            if (daily.sun!!.riseDate!! in daily.date..<nextDayAtMidnight) {
+            if (daily.sun!!.riseDate!! < nextDayAtMidnight) {
                 daily.sun!!
             } else {
                 getCalculatedAstroSun(daily.date, location.longitude, location.latitude)
@@ -617,7 +625,7 @@ fun completeDailyListFromHourlyList(
             moon = if (daily.moon?.isValid == true) {
                 // We check that the moonrise is indeed between 00:00 and 23:59 that day
                 // (many sources unfortunately return next day!)
-                if (daily.moon!!.riseDate!! in daily.date..<nextDayAtMidnight) {
+                if (daily.moon!!.riseDate!! < nextDayAtMidnight) {
                     daily.moon
                 } else {
                     getCalculatedAstroMoon(daily.date, location.longitude, location.latitude)
@@ -663,55 +671,85 @@ private fun getDegreeDay(minTemp: Double?, maxTemp: Double?): DegreeDay? {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
+fun main() {
+//    val ids = TimeZone.getAvailableIDs()
+//    for (id in ids) {
+//        println(id)
+//    }
+    val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+    val sdfTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
+    val tz = "Arctic/Longyearbyen"
+//    val tz = "Asia/Shanghai"
+    sdf.timeZone = TimeZone.getTimeZone(tz)
+    sdfTime.timeZone = TimeZone.getTimeZone(tz)
+    val startDate = sdf.parse("2024-10-1")
+    for (i in 0..30) {
+        val date = startDate!!.toLocalDateTime(ZoneId.of(tz)).plusDays(i.toLong()).toDate(ZoneId.of(tz))
+//        val times = getCalculatedAstroSun(date, 15.633333333333333, 78.21666666666667)
+        val times = getCalculatedAstroMoon(date,  15.633333333333333, 78.21666666666667)
+        println("[${sdf.format(date)}][${times.riseDatePre?.let { sdfTime.format(it) }} - ${times.setDatePre?.let { sdfTime.format(it) }}]" +
+                " -> [${times.riseDate?.let { sdfTime.format(it) }} - ${times.setDate?.let { sdfTime.format(it) }} (${times.duration})]"
+        )
+    }
+}
+
+
 /**
  * Return 00:00:00.00 to 23:59:59.999 if sun is always up (assuming date parameter is at 00:00)
  * Takes 5 to 40 ms to execute on my device
  * Means that for a 15-day forecast, take between 0.1 and 0.6 sec
  * Given it is only called on missing data, it’s efficiently-safe
  */
+@RequiresApi(Build.VERSION_CODES.O)
 private fun getCalculatedAstroSun(date: Date, longitude: Double, latitude: Double): Astro {
-    val riseTimes = SunTimes.compute().on(date).at(latitude, longitude).execute()
+    val riseTimes = SunTimes.compute().on(date).oneDay().at(latitude, longitude).execute().toDate()
 
     if (riseTimes.isAlwaysUp) {
         return Astro(
             riseDate = date,
-            setDate = Date(date.time + 1.days.inWholeMilliseconds - 1)
+            setDate = Date(date.time + 1.days.inWholeMilliseconds)
         )
     }
 
-    // If we miss the rise time, it means we are leaving midnight sun season
+    // If we miss the rise time, it means moon was already up before 00:00
     if (riseTimes.rise == null && riseTimes.set != null) {
+        // If the rise time of yesterday is null, it means yesterday is up all day, setting 00:00 as the rise date
+        val riseTimesPre = SunTimes.compute().on(Date(date.time - 1.days.inWholeMilliseconds)).oneDay().at(latitude, longitude).execute().toDate()
+        val riseDate = riseTimesPre.rise ?: date
         return Astro(
-            riseDate = date, // Setting 00:00 as rise date
-            setDate = riseTimes.set
+            riseDate = riseDate, // Setting 00:00 or the rise time of yesterday as the rise date
+            setDate = riseTimes.set,
+            riseDatePre = riseDate,
+            setDatePre = riseTimes.set
         )
     }
 
-    if (riseTimes.rise != null && riseTimes.set != null && riseTimes.set!! < riseTimes.rise) {
-        val setTimes = SunTimes.compute().on(riseTimes.rise).at(latitude, longitude).execute()
-        if (setTimes.set != null) {
-            return Astro(
-                riseDate = riseTimes.rise,
-                setDate = setTimes.set
-            )
-        }
+    val tomorrowEnd = date.time + 2.days.inWholeMilliseconds
 
-        // If we miss the set time, redo a calculation that takes more computing power
-        // Should not happen very often so avoid doing full cycle everytime
-        val setTimes2 = SunTimes.compute().fullCycle().on(riseTimes.rise).at(latitude, longitude).execute()
+    if (riseTimes.rise != null && riseTimes.set != null && riseTimes.set < riseTimes.rise) {
+        val setTimes = SunTimes.compute().on(riseTimes.rise).limit(Duration.ofDays(2)).at(latitude, longitude).execute().toDate()
+        // If the rise time of yesterday is null, it means yesterday is up all day, setting 00:00 as the previous rise date
+        val riseTimesPre = SunTimes.compute().on(Date(date.time - 1.days.inWholeMilliseconds)).oneDay().at(latitude, longitude).execute().toDate()
+        // If the set time is larger than the end time of tomorrow or cannot be found within 2 days, it means tomorrow is up all day, setting 24:00 as the set date
+        val setDate = if (setTimes.set == null || setTimes.set.time > tomorrowEnd) Date(date.time + 1.days.inWholeMilliseconds) else setTimes.set
         return Astro(
             riseDate = riseTimes.rise,
-            setDate = setTimes2.set
+            setDate = setDate,
+            riseDatePre = riseTimesPre.rise ?: date,
+            setDatePre = riseTimes.set
         )
     }
 
     // If we miss the set time, redo a calculation that takes more computing power
     // Should not happen very often so avoid doing full cycle everytime
     if (riseTimes.rise != null && riseTimes.set == null) {
-        val times2 = SunTimes.compute().fullCycle().on(riseTimes.rise).at(latitude, longitude).execute()
+        val setTimes = SunTimes.compute().on(date).limit(Duration.ofDays(2)).at(latitude, longitude).execute().toDate()
+        // If the set time is larger than the end time of tomorrow or cannot be found within 2 days, it means tomorrow is up all day, setting 24:00 as the set date
+        val setDate = if (setTimes.set == null || setTimes.set.time > tomorrowEnd) Date(date.time + 1.days.inWholeMilliseconds) else setTimes.set
         return Astro(
-            riseDate = times2.rise,
-            setDate = times2.set
+            riseDate = riseTimes.rise,
+            setDate = setDate
         )
     }
 
@@ -721,49 +759,55 @@ private fun getCalculatedAstroSun(date: Date, longitude: Double, latitude: Doubl
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 private fun getCalculatedAstroMoon(date: Date, longitude: Double, latitude: Double): Astro {
-    val riseTimes = MoonTimes.compute().on(date).at(latitude, longitude).execute()
+    val riseTimes = MoonTimes.compute().on(date).oneDay().at(latitude, longitude).execute().toDate()
 
     if (riseTimes.isAlwaysUp) {
         return Astro(
             riseDate = date,
-            setDate = Date(date.time + 1.days.inWholeMilliseconds - 1)
+            setDate = Date(date.time + 1.days.inWholeMilliseconds)
         )
     }
 
     // If we miss the rise time, it means moon was already up before 00:00
     if (riseTimes.rise == null && riseTimes.set != null) {
+        // If the rise time of yesterday is null, it means yesterday is up all day, setting 00:00 as the rise date
+        val riseTimesPre = MoonTimes.compute().on(Date(date.time - 1.days.inWholeMilliseconds)).oneDay().at(latitude, longitude).execute().toDate()
+        val riseDate = riseTimesPre.rise ?: date
         return Astro(
-            riseDate = date, // Setting 00:00 as rise date
-            setDate = riseTimes.set
+            riseDate = riseDate, // Setting 00:00 or the rise time of yesterday as the rise date
+            setDate = riseTimes.set,
+            riseDatePre = riseDate,
+            setDatePre = riseTimes.set
         )
     }
 
-    if (riseTimes.rise != null && riseTimes.set != null && riseTimes.set!! < riseTimes.rise) {
-        val setTimes = MoonTimes.compute().on(riseTimes.rise).at(latitude, longitude).execute()
-        if (setTimes.set != null) {
-            return Astro(
-                riseDate = riseTimes.rise,
-                setDate = setTimes.set
-            )
-        }
+    val tomorrowEnd = date.time + 2.days.inWholeMilliseconds
 
-        // If we miss the set time, redo a calculation that takes more computing power
-        // Should not happen very often so avoid doing full cycle everytime
-        val setTimes2 = MoonTimes.compute().fullCycle().on(riseTimes.rise).at(latitude, longitude).execute()
+    if (riseTimes.rise != null && riseTimes.set != null && riseTimes.set < riseTimes.rise) {
+        val setTimes = MoonTimes.compute().on(riseTimes.rise).limit(Duration.ofDays(2)).at(latitude, longitude).execute().toDate()
+        // If the rise time of yesterday is null, it means yesterday is up all day, setting 00:00 as the previous rise date
+        val riseTimesPre = MoonTimes.compute().on(Date(date.time - 1.days.inWholeMilliseconds)).oneDay().at(latitude, longitude).execute().toDate()
+        // If the set time is larger than the end time of tomorrow or cannot be found within 2 days, it means tomorrow is up all day, setting 24:00 as the set date
+        val setDate = if (setTimes.set == null || setTimes.set.time > tomorrowEnd) Date(date.time + 1.days.inWholeMilliseconds) else setTimes.set
         return Astro(
             riseDate = riseTimes.rise,
-            setDate = setTimes2.set
+            setDate = setDate,
+            riseDatePre = riseTimesPre.rise ?: date,
+            setDatePre = riseTimes.set
         )
     }
 
     // If we miss the set time, redo a calculation that takes more computing power
     // Should not happen very often so avoid doing full cycle everytime
     if (riseTimes.rise != null && riseTimes.set == null) {
-        val times2 = MoonTimes.compute().fullCycle().on(riseTimes.rise).at(latitude, longitude).execute()
+        val setTimes = MoonTimes.compute().on(date).limit(Duration.ofDays(2)).at(latitude, longitude).execute().toDate()
+        // If the set time is larger than the end time of tomorrow or cannot be found within 2 days, it means tomorrow is up all day, setting 24:00 as the set date
+        val setDate = if (setTimes.set == null || setTimes.set.time > tomorrowEnd) Date(date.time + 1.days.inWholeMilliseconds) else setTimes.set
         return Astro(
-            riseDate = times2.rise,
-            setDate = times2.set
+            riseDate = riseTimes.rise,
+            setDate = setDate
         )
     }
 

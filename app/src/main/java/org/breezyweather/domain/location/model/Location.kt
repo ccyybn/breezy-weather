@@ -3,7 +3,6 @@ package org.breezyweather.domain.location.model
 import android.content.Context
 import breezyweather.domain.location.model.Location
 import org.breezyweather.R
-import org.breezyweather.domain.weather.model.getRiseProgress
 
 fun Location.getPlace(context: Context, showCurrentPositionInPriority: Boolean = false): String {
     if (showCurrentPositionInPriority && isCurrentPosition) {
@@ -19,9 +18,12 @@ fun Location.getPlace(context: Context, showCurrentPositionInPriority: Boolean =
 
 val Location.isDaylight: Boolean
     get() {
-        val sunRiseProgress = getRiseProgress(
-            astro = this.weather?.today?.sun,
-            location = this
-        )
-        return 0 < sunRiseProgress && sunRiseProgress < 1
+        val astro = this.weather?.today?.sun
+        val riseTime = astro?.riseDate?.time
+        val setTime = astro?.setDate?.time
+        if (riseTime == null || setTime == null) {
+            return false
+        }
+        val currentTime = System.currentTimeMillis()
+        return currentTime >= riseTime && currentTime < setTime
     }

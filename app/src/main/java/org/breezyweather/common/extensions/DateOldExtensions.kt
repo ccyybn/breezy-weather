@@ -17,6 +17,10 @@
 package org.breezyweather.common.extensions
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
+import org.shredzone.commons.suncalc.MoonTimes
+import org.shredzone.commons.suncalc.SunTimes
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -24,6 +28,23 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
+
+@RequiresApi(Build.VERSION_CODES.O)
+data class MoonDates(val moonTimes: MoonTimes) {
+    val rise: Date? = if (moonTimes.rise != null) Date.from(moonTimes.rise?.toInstant()) else null
+    val set: Date? = if (moonTimes.set != null) Date.from(moonTimes.set?.toInstant()) else null
+    val isAlwaysUp = moonTimes.isAlwaysUp
+    val isAlwaysDown = moonTimes.isAlwaysDown
+}
+
+
+@RequiresApi(Build.VERSION_CODES.O)
+data class SunDates(val sunTimes: SunTimes) {
+    val rise: Date? = if (sunTimes.rise != null) Date.from(sunTimes.rise?.toInstant()) else null
+    val set: Date? = if (sunTimes.set != null) Date.from(sunTimes.set?.toInstant()) else null
+    val isAlwaysUp = sunTimes.isAlwaysUp
+    val isAlwaysDown = sunTimes.isAlwaysDown
+}
 
 @SuppressLint("NewApi")
 fun Date.toLocalDateTime(zoneId: ZoneId): LocalDateTime {
@@ -33,6 +54,21 @@ fun Date.toLocalDateTime(zoneId: ZoneId): LocalDateTime {
 @SuppressLint("NewApi")
 fun LocalDateTime.toDate(zoneId: ZoneId): Date {
     return Date.from(this.atZone(zoneId).toInstant())
+}
+
+@SuppressLint("NewApi")
+fun LocalDateTime.toDate(): Date {
+    return Date.from(this.atZone(ZoneId.systemDefault()).toInstant())
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun MoonTimes.toDate(): MoonDates {
+    return MoonDates(this)
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun SunTimes.toDate(): SunDates {
+    return SunDates(this)
 }
 
 /**
@@ -47,6 +83,7 @@ fun Date.toCalendarWithTimeZone(zone: TimeZone): Calendar {
     }
 }
 
+
 /**
  * Get a date at midnight on a specific timezone from a formatted date
  * @this formattedDate in yyyy-MM-dd format
@@ -55,29 +92,8 @@ fun Date.toCalendarWithTimeZone(zone: TimeZone): Calendar {
  */
 fun String.toDateNoHour(timeZoneP: TimeZone = TimeZone.getDefault()): Date? {
     if (this.isEmpty() || this.length < 10) return null
-    return Calendar.getInstance().also {
-        it.timeZone = timeZoneP
-        it.set(Calendar.YEAR, this.substring(0, 4).toInt())
-        it.set(Calendar.MONTH, this.substring(5, 7).toInt() - 1)
-        it.set(Calendar.DAY_OF_MONTH, this.substring(8, 10).toInt())
-        it.set(Calendar.HOUR_OF_DAY, 0)
-        it.set(Calendar.MINUTE, 0)
-        it.set(Calendar.SECOND, 0)
-        it.set(Calendar.MILLISECOND, 0)
-    }.time
-}
-
-@Deprecated("Makes no sense, must be replaced")
-fun Date.toTimezone(timeZone: TimeZone = TimeZone.getDefault()): Date {
-    val calendarWithTimeZone = this.toCalendarWithTimeZone(timeZone)
-    return Date(
-        calendarWithTimeZone[Calendar.YEAR] - 1900,
-        calendarWithTimeZone[Calendar.MONTH],
-        calendarWithTimeZone[Calendar.DAY_OF_MONTH],
-        calendarWithTimeZone[Calendar.HOUR_OF_DAY],
-        calendarWithTimeZone[Calendar.MINUTE],
-        calendarWithTimeZone[Calendar.SECOND]
-    )
+    return SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).apply { timeZone = timeZoneP }
+        .parse(this)
 }
 
 fun Date.toTimezoneNoHour(timeZone: TimeZone = TimeZone.getDefault()): Date? {

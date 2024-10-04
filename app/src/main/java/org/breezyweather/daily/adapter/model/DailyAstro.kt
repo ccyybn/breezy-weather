@@ -20,9 +20,11 @@ import breezyweather.domain.location.model.Location
 import breezyweather.domain.weather.model.Astro
 import breezyweather.domain.weather.model.MoonPhase
 import org.breezyweather.daily.adapter.DailyWeatherAdapter
+import java.util.Date
 
 class DailyAstro(
     val location: Location,
+    val date: Date,
     val sun: Astro?,
     val moon: Astro?,
     val moonPhase: MoonPhase?
