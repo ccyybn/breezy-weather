@@ -35,7 +35,7 @@ import java.util.Date
 import java.util.Locale
 
 val Context.is12Hour: Boolean
-    get() = !DateFormat.is24HourFormat(this)
+    get() = false
 
 fun Date.getRelativeTime(context: Context): String {
     try {
