@@ -46,7 +46,10 @@ import org.breezyweather.sources.china.json.ChinaForecastDaily
 import org.breezyweather.sources.china.json.ChinaForecastHourly
 import org.breezyweather.sources.china.json.ChinaForecastMinutely
 import org.breezyweather.sources.china.json.ChinaForecastResult
+import org.breezyweather.sources.china.json.ChinaHourlyWind
+import org.breezyweather.sources.china.json.ChinaHourlyWindValue
 import org.breezyweather.sources.china.json.ChinaLocationResult
+import org.breezyweather.sources.china.json.ChinaValueListInt
 import java.time.LocalTime
 import java.util.Date
 import java.util.Objects
@@ -86,7 +89,6 @@ fun convert(
             forecastResult.forecastDaily
         ),
         hourlyForecast = getHourlyList(
-            forecastResult.current.pubTime,
             location,
             forecastResult.forecastHourly
         ),
@@ -235,34 +237,68 @@ private fun reverseIndex(aqi: Int?): Double? {
     }
 }
 
+@SuppressLint("NewApi")
+private fun getHourlyValueMap(
+    location: Location,
+    valueList: ChinaValueListInt?
+): Map<Date, Int?> {
+    return if (valueList?.pubTime != null && valueList.value != null) {
+        valueList.value.mapIndexed { index, i -> Pair(index, i) }
+            .groupBy {
+                valueList.pubTime.toLocalDateTime(location.zoneId)
+                    .withMinute(0).withSecond(0).withNano(0).plusHours(it.first.toLong())
+                    .toDate(location.zoneId)
+            }.mapValues { entry -> entry.value.map { it.second }.firstOrNull() }
+    } else {
+        HashMap()
+    }
+}
+
+@SuppressLint("NewApi")
+private fun getHourlyWindMap(
+    windList: ChinaHourlyWind?
+): Map<Date, ChinaHourlyWindValue?> {
+    return if (windList?.value != null) {
+        windList.value
+            .filter { it.datetime != null }
+            .groupBy {
+                it.datetime!!
+            }.mapValues { entry -> entry.value.firstOrNull() }
+    } else {
+        HashMap()
+    }
+}
+
 
 @SuppressLint("NewApi")
 private fun getHourlyList(
-    publishDate: Date,
     location: Location,
     hourlyForecast: ChinaForecastHourly
 ): List<HourlyWrapper> {
-    if (hourlyForecast.weather == null || hourlyForecast.weather.value.isNullOrEmpty()) return emptyList()
+    if (hourlyForecast.weather == null || hourlyForecast.weather.value.isNullOrEmpty() || hourlyForecast.weather.pubTime == null) return emptyList()
 
-    val hourlyListPubTime = hourlyForecast.temperature?.pubTime ?: publishDate
-    val localDateTime = hourlyListPubTime.toLocalDateTime(location.zoneId)
+    val temperatures = getHourlyValueMap(location, hourlyForecast.temperature)
+    val aqis = getHourlyValueMap(location, hourlyForecast.aqi)
+    val winds = getHourlyWindMap(hourlyForecast.wind)
+
+    val localDateTime = hourlyForecast.weather.pubTime.toLocalDateTime(location.zoneId)
 
     val hourlyList: MutableList<HourlyWrapper> = ArrayList(hourlyForecast.weather.value.size)
     hourlyForecast.weather.value.forEachIndexed { index, weather ->
-        val time = localDateTime.withMinute(0).withSecond(0).withNano(0).plusHours(index.toLong())
-        val aqi = hourlyForecast.aqi?.value?.getOrNull(index)
+        val date = localDateTime.withMinute(0).withSecond(0).withNano(0).plusHours(index.toLong()).toDate(location.zoneId)
+        val aqi = aqis[date]
         hourlyList.add(
             HourlyWrapper(
-                date = time.toDate(location.zoneId),
+                date = date,
                 weatherText = getWeatherText(weather.toString()),
                 weatherCode = getWeatherCode(weather.toString()),
                 temperature = Temperature(
-                    temperature = hourlyForecast.temperature?.value?.getOrNull(index)?.toDouble()
+                    temperature = temperatures[date]?.toDouble()
                 ),
                 airQuality = if (aqi != null) AirQuality(reverseIndex(aqi), null, null, null, null, null) else null,
                 wind = if (hourlyForecast.wind != null) Wind(
-                    degree = hourlyForecast.wind.value?.getOrNull(index)?.direction?.toDoubleOrNull(),
-                    speed = hourlyForecast.wind.value?.getOrNull(index)?.speed?.toDoubleOrNull()?.div(3.6)
+                    degree = winds[date]?.direction?.toDoubleOrNull(),
+                    speed = winds[date]?.speed?.toDoubleOrNull()?.div(3.6)
                 ) else null
             )
         )
