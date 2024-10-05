@@ -838,8 +838,8 @@ private fun getHourlyListByHalfDay(
     val hourlyByHalfDay: MutableMap<String, Map<String, MutableList<HourlyWrapper>>> = HashMap()
 
     hourlyList.forEach { hourly ->
-        // We shift by 6 hours the hourly date, otherwise nighttime (00:00 to 05:59) would be on the wrong day
-        val theDayShifted = Date(hourly.date.time - 6.hours.inWholeMilliseconds)
+        // We Shift hourly time by 8 hours to match daily time (08:00-20:00)
+        val theDayShifted = Date(hourly.date.time - 8.hours.inWholeMilliseconds)
         val theDayFormatted = theDayShifted.getFormattedDate("yyyy-MM-dd", location)
 
         if (!hourlyByHalfDay.containsKey(theDayFormatted)) {
