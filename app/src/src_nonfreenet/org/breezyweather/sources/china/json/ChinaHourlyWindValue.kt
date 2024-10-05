@@ -17,9 +17,12 @@
 package org.breezyweather.sources.china.json
 
 import kotlinx.serialization.Serializable
+import org.breezyweather.common.serializer.DateSerializer
+import java.util.Date
 
 @Serializable
 data class ChinaHourlyWindValue(
+    @Serializable(DateSerializer::class) val datetime: Date?,
     val direction: String?,
     val speed: String?
 )
