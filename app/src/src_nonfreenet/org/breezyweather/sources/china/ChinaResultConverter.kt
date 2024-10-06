@@ -23,7 +23,6 @@ import breezyweather.domain.location.model.Location
 import breezyweather.domain.weather.model.AirQuality
 import breezyweather.domain.weather.model.Alert
 import breezyweather.domain.weather.model.AlertSeverity
-import breezyweather.domain.weather.model.Astro
 import breezyweather.domain.weather.model.Current
 import breezyweather.domain.weather.model.Daily
 import breezyweather.domain.weather.model.HalfDay
@@ -193,10 +192,10 @@ private fun getDailyList(
                     ) else null
                 ),
                 airQuality = if (aqi != null) AirQuality(reverseIndex(aqi), null, null, null, null, null) else null,
-                sun = Astro(
-                    riseDate = dailyForecast.sunRiseSet?.value?.getOrNull(index)?.from,
-                    setDate = dailyForecast.sunRiseSet?.value?.getOrNull(index)?.to
-                )
+//                sun = Astro(
+//                    riseDate = dailyForecast.sunRiseSet?.value?.getOrNull(index)?.from,
+//                    setDate = dailyForecast.sunRiseSet?.value?.getOrNull(index)?.to
+//                )
             )
         )
     }
