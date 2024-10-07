@@ -16,6 +16,6 @@ data class GadgetbridgeDailyForecast(
     val sunSet: Int? = null,
     val moonRise: Int? = null,
     val moonSet: Int? = null,
-    val moonPhase: Int? = null,
+    val moonPhase: Double? = null,
     val airQuality: GadgetbridgeAirQuality? = null,
 )

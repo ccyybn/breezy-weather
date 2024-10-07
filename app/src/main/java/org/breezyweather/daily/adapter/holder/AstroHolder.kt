@@ -22,18 +22,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
-import org.breezyweather.BreezyWeather
 import org.breezyweather.R
 import org.breezyweather.common.basic.models.options.unit.DurationUnit
-import org.breezyweather.common.extensions.getFormattedDate
 import org.breezyweather.common.extensions.getFormattedTime
 import org.breezyweather.common.extensions.is12Hour
 import org.breezyweather.common.ui.widgets.astro.MoonPhaseView
 import org.breezyweather.daily.adapter.DailyWeatherAdapter
 import org.breezyweather.daily.adapter.model.DailyAstro
 import org.breezyweather.domain.weather.model.getDescription
-import org.breezyweather.theme.ThemeManager
+import org.breezyweather.main.utils.MainThemeColorProvider
 import kotlin.time.Duration.Companion.days
 
 class AstroHolder(parent: ViewGroup) : DailyWeatherAdapter.ViewHolder(
@@ -131,13 +128,11 @@ class AstroHolder(parent: ViewGroup) : DailyWeatherAdapter.ViewHolder(
         if (model.moonPhase != null && model.moonPhase.isValid) {
             talkBackBuilder.append(context.getString(R.string.comma_separator)).append(model.moonPhase.getDescription(context))
             mMoonPhase.visibility = View.VISIBLE
-            mMoonPhaseIcon.setSurfaceAngle(model.moonPhase.angle!!.toFloat())
+            mMoonPhaseIcon.setSurfaceAngle(model.moonPhase.angle!!)
             mMoonPhaseIcon.setColor(
-                ContextCompat.getColor(context, R.color.colorTextLight2nd),
-                ContextCompat.getColor(context, R.color.colorTextDark2nd),
-                ThemeManager.getInstance(context).getThemeColor(
-                    context, R.attr.colorBodyText
-                )
+                MainThemeColorProvider.getColor(location, R.attr.colorMoonLight),
+                MainThemeColorProvider.getColor(location, R.attr.colorMoonDark),
+                MainThemeColorProvider.getColor(location, R.attr.colorMoonDark)
             )
             mMoonPhaseText.text = model.moonPhase.getDescription(context)
         } else {
