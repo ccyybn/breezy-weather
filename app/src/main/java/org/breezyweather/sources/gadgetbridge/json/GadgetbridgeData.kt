@@ -44,7 +44,7 @@ data class GadgetbridgeData (
     val sunSet: Int? = null,
     val moonRise: Int? = null,
     val moonSet: Int? = null,
-    val moonPhase: Int? = null,
+    val moonPhase: Double? = null,
     val feelsLikeTemp: Int? = null,
     val forecasts: List<GadgetbridgeDailyForecast>? = null,
     val hourly: List<GadgetbridgeHourlyForecast>? = null,
