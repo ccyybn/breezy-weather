@@ -31,6 +31,7 @@ import android.widget.TextView
 import androidx.annotation.Size
 import androidx.core.graphics.ColorUtils
 import breezyweather.domain.location.model.Location
+import breezyweather.domain.weather.model.MoonPhase
 import breezyweather.domain.weather.model.Weather
 import org.breezyweather.R
 import org.breezyweather.common.basic.GeoActivity
@@ -44,7 +45,9 @@ import org.breezyweather.theme.ThemeManager
 import org.breezyweather.theme.resource.ResourceHelper
 import org.breezyweather.theme.resource.providers.ResourceProvider
 import org.breezyweather.theme.weatherView.WeatherViewController
+import org.shredzone.commons.suncalc.MoonIllumination
 import java.util.Calendar
+import java.util.Date
 import java.util.TimeZone
 import kotlin.math.max
 import kotlin.math.min
@@ -76,7 +79,7 @@ class AstroViewHolder(parent: ViewGroup) : AbstractMainCardViewHolder(
 
     @Size(2)
     private var mAnimCurrentTimes: LongArray = LongArray(2)
-    private var mPhaseAngle = 0
+    private var mPhaseAngle = 0.0
 
     @Size(3)
     private val mAttachAnimatorSets: Array<AnimatorSet?>
@@ -114,28 +117,19 @@ class AstroViewHolder(parent: ViewGroup) : AbstractMainCardViewHolder(
         mTitle.setTextColor(themeColors[0])
         val talkBackBuilder = StringBuilder(mTitle.text)
         ensureTime(mWeather!!, location.javaTimeZone)
-        ensurePhaseAngle(mWeather!!)
-        mWeather?.today?.moonPhase?.let { moonPhase ->
-            if (moonPhase.isValid) {
-                mPhaseText.visibility = View.VISIBLE
-                mPhaseView.visibility = View.VISIBLE
-                mPhaseText.setTextColor(MainThemeColorProvider.getColor(location, R.attr.colorBodyText))
-                mPhaseView.setColor(
-                    ContextCompat.getColor(context, R.color.colorTextLight2nd),
-                    ContextCompat.getColor(context, R.color.colorTextDark2nd),
-                    MainThemeColorProvider.getColor(location, R.attr.colorBodyText)
-                )
-                mPhaseText.text = moonPhase.getDescription(context)
-                talkBackBuilder.append(context.getString(R.string.comma_separator))
-                    .append(mPhaseText.text)
-            } else {
-                mPhaseText.visibility = View.GONE
-                mPhaseView.visibility = View.GONE
-            }
-        } ?: run {
-            mPhaseText.visibility = View.GONE
-            mPhaseView.visibility = View.GONE
-        }
+        ensurePhaseAngle()
+
+        mPhaseText.visibility = View.VISIBLE
+        mPhaseView.visibility = View.VISIBLE
+        mPhaseText.setTextColor(MainThemeColorProvider.getColor(location, R.attr.colorBodyText))
+        mPhaseView.setColor(
+            MainThemeColorProvider.getColor(location, R.attr.colorMoonLight),
+            MainThemeColorProvider.getColor(location, R.attr.colorMoonDark),
+            MainThemeColorProvider.getColor(location, R.attr.colorMoonDark)
+        )
+        mPhaseText.text = MoonPhase(mPhaseAngle).getDescription(context)
+        talkBackBuilder.append(context.getString(R.string.comma_separator))
+            .append(mPhaseText.text)
 
         mSunMoonView.setSunDrawable(ResourceHelper.getSunDrawable(provider))
         mSunMoonView.setMoonDrawable(ResourceHelper.getMoonDrawable(provider))
@@ -160,12 +154,12 @@ class AstroViewHolder(parent: ViewGroup) : AbstractMainCardViewHolder(
             mSunMoonView.setTime(mStartTimes, mEndTimes, mStartTimes)
             mSunMoonView.setDayIndicatorRotation(0f)
             mSunMoonView.setNightIndicatorRotation(0f)
-            mPhaseView.setSurfaceAngle(0f)
+            mPhaseView.setSurfaceAngle(0.0)
         } else {
             mSunMoonView.post { mSunMoonView.setTime(mStartTimes, mEndTimes, mCurrentTimes) }
             mSunMoonView.setDayIndicatorRotation(0f)
             mSunMoonView.setNightIndicatorRotation(0f)
-            mPhaseView.setSurfaceAngle(mPhaseAngle.toFloat())
+            mPhaseView.setSurfaceAngle(mPhaseAngle)
         }
 
         mWeather?.today?.sun?.let { sun ->
@@ -275,7 +269,7 @@ class AstroViewHolder(parent: ViewGroup) : AbstractMainCardViewHolder(
             }.also { it.start() }
             if (mPhaseAngle > 0) {
                 val moonAngle = ValueAnimator.ofObject(FloatEvaluator(), 0, mPhaseAngle)
-                moonAngle.addUpdateListener { animation: ValueAnimator -> mPhaseView.setSurfaceAngle((animation.animatedValue as Float)) }
+                moonAngle.addUpdateListener { animation: ValueAnimator -> mPhaseView.setSurfaceAngle(((animation.animatedValue as Float).toDouble())) }
                 mAttachAnimatorSets[2] = AnimatorSet().apply {
                     playTogether(moonAngle)
                     interpolator = DecelerateInterpolator()
@@ -342,8 +336,11 @@ class AstroViewHolder(parent: ViewGroup) : AbstractMainCardViewHolder(
         mAnimCurrentTimes = longArrayOf(mCurrentTimes[0], mCurrentTimes[1])
     }
 
-    private fun ensurePhaseAngle(weather: Weather) {
-        mPhaseAngle = weather.today?.moonPhase?.angle ?: 0
+    private fun ensurePhaseAngle() {
+        val illumination = MoonIllumination.compute()
+            .on(Date())
+            .execute()
+        mPhaseAngle = illumination.phase + 180
     }
 
     private fun getPathAnimatorDuration(index: Int): Long {

@@ -94,7 +94,7 @@ CREATE TABLE dailys(
     moon_set_date_pre INTEGER,
 
     -- moon phase
-    moon_phase_angle INTEGER,
+    moon_phase_angle REAL,
 
     -- aqi.
     pm25 REAL,

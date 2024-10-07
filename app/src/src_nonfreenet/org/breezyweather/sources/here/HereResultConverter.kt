@@ -155,7 +155,7 @@ private fun getDailyForecast(
                         } else null
                     )
                 ),
-                moonPhase = MoonPhase(angle = astro?.moonPhase?.times(360)?.roundToInt()),
+                moonPhase = MoonPhase(angle = astro?.moonPhase?.times(360)),
                 uV = UV(index = dailyForecast.uvIndex?.toDouble())
             )
         )

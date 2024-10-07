@@ -820,7 +820,7 @@ private fun getCalculatedMoonPhase(date: Date): MoonPhase {
         .execute()
 
     return MoonPhase(
-        angle = (illumination.phase + 180).roundToInt()
+        angle = illumination.phase + 180
     )
 }
 
