@@ -241,7 +241,7 @@ class WeatherRepository(
                     moonSetDatePre = daily.moon?.setDatePre?.time,
 
                     // moon phase.
-                    moonPhaseAngle = daily.moonPhase?.angle?.toLong(),
+                    moonPhaseAngle = daily.moonPhase?.angle,
 
                     // aqi.
                     pm25 = daily.airQuality?.pM25,

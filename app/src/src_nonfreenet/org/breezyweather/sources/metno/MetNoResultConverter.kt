@@ -182,7 +182,7 @@ private fun getDailyList(
                         setDate = moonResult?.moonset?.time,
                     ) else null,
                     moonPhase = if (i == 0) MoonPhase(
-                        angle = moonResult?.moonphase?.roundToInt()
+                        angle = moonResult?.moonphase
                     ) else null
                 )
             )
