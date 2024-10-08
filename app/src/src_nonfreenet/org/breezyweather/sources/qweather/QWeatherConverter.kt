@@ -90,7 +90,7 @@ fun convert(
     }
     return WeatherWrapper(
         current = Current(
-            hourlyForecast = minutelyResult.summary,
+            hourlyForecast = rectifySummary(minutelyResult.summary),
             weatherText = getWeatherText(nowResult.now?.icon, nowResult.now?.text, lang),
             weatherCode = getWeatherCode(nowResult.now?.icon),
             temperature = Temperature(
@@ -260,7 +260,7 @@ fun convertSecondary(
         alertList = getWarningList(warningResult),
         minutelyForecast = getMinutelyList(minutelyResult),
         current = Current(
-            hourlyForecast = minutelyResult.summary,
+            hourlyForecast = rectifySummary(minutelyResult.summary),
             weatherText = getWeatherText(nowResult.now?.icon, nowResult.now?.text, lang),
             weatherCode = getWeatherCode(nowResult.now?.icon),
             temperature = Temperature(
@@ -500,4 +500,10 @@ fun reverseIndex(aqi: Int?): Double? {
     } else {
         return aqi.toDouble() * pm25Thresholds.last().toDouble() / aqiThresholds.last().toDouble()
     }
+}
+
+fun rectifySummary(summary: String?): String? {
+    return summary
+        ?.replace("precip", "precipitation")
+        ?.replace("Rain/Snow", "Precipitation")
 }
