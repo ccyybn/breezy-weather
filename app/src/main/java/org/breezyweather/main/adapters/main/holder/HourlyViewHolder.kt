@@ -20,6 +20,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import breezyweather.domain.location.model.Location
 import org.breezyweather.R
@@ -102,6 +103,7 @@ class HourlyViewHolder(
             }
         }.toMutableList()
 
+        Toast.makeText(activity, "[${tagList.size}]HourlyViewHolder: " + tagList.joinToString(",") { it.name }, Toast.LENGTH_SHORT).show()
         if (tagList.size < 2) {
             tagView.visibility = View.GONE
         } else {

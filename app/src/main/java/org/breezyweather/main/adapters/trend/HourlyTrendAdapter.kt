@@ -18,6 +18,7 @@ package org.breezyweather.main.adapters.trend
 
 import android.annotation.SuppressLint
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import breezyweather.domain.location.model.Location
 import org.breezyweather.common.basic.GeoActivity
@@ -56,7 +57,9 @@ class HourlyTrendAdapter(
     fun bindData(location: Location) {
         val provider = ResourcesProviderFactory.newInstance
 
-        adapters = SettingsManager.getInstance(activity).hourlyTrendDisplayList.map {
+        val hourlyTrendDisplayList = SettingsManager.getInstance(activity).hourlyTrendDisplayList
+        Toast.makeText(activity, "[${hourlyTrendDisplayList.size}]hourlyTrendDisplayList: " + hourlyTrendDisplayList.joinToString(",") { it.name }, Toast.LENGTH_SHORT).show()
+        adapters = hourlyTrendDisplayList.map {
             when (it) {
                 HourlyTrendDisplay.TAG_TEMPERATURE -> HourlyTemperatureAdapter(
                     activity,
@@ -109,6 +112,7 @@ class HourlyTrendAdapter(
         }.filter {
             it.isValid(location)
         }.toTypedArray()
+        Toast.makeText(activity, "[${adapters.size}]HourlyTrendAdapter: " + adapters.joinToString(",") { it.getDisplayName(activity) }, Toast.LENGTH_SHORT).show()
         notifyDataSetChanged()
     }
 

@@ -20,6 +20,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.Size
 import breezyweather.domain.location.model.Location
 import org.breezyweather.R
@@ -188,9 +189,11 @@ class HourlyFeelsLikeAdapter(
     override fun getItemCount() = location.weather!!.nextHourlyForecast.size
 
     override fun isValid(location: Location): Boolean {
-        return location.weather?.nextHourlyForecast?.any {
+        val isValid = location.weather?.nextHourlyForecast?.any {
             it.temperature?.feelsLikeTemperature != null
-        } == true
+        }
+        Toast.makeText(activity, "HourlyFeelsLikeAdapter: [${location.weather?.nextHourlyForecast?.size}][$isValid][${location.weather?.nextHourlyForecast?.map { it.temperature?.feelsLikeTemperature }?.joinToString(",")}]", Toast.LENGTH_SHORT).show()
+        return isValid == true
     }
 
     override fun getDisplayName(context: Context) = context.getString(R.string.tag_feels_like)
