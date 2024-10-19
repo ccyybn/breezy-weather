@@ -569,6 +569,9 @@ class RefreshHelper @Inject constructor(
                             it
                         } ?: getMinutelyFromWeather(location.weather)
                     } else null,
+                    precipitation = if (!location.minutelySource.isNullOrEmpty() && location.minutelySource != location.weatherSource) {
+                        secondarySourceCalls.getOrElse(location.minutelySource!!) { null }?.precipitation
+                    } else null,
                     alertList = if (!location.alertSource.isNullOrEmpty() && location.alertSource != location.weatherSource) {
                         secondarySourceCalls.getOrElse(location.alertSource!!) { null }?.alertList?.let {
                             alertsUpdateTime = Date()
@@ -637,7 +640,8 @@ class RefreshHelper @Inject constructor(
                     secondaryWeatherWrapper?.current ?: mainWeatherCompleted.current,
                     currentHour,
                     currentDay,
-                    secondaryWeatherWrapperCompleted?.airQuality?.current,
+                    secondaryWeatherWrapperCompleted?.airQuality?.current ?: mainWeatherCompleted.current?.airQuality,
+                    secondaryWeatherWrapperCompleted?.precipitation ?: mainWeatherCompleted.current?.hourlyForecast,
                     location
                 ),
                 normals = secondaryWeatherWrapper?.normals
