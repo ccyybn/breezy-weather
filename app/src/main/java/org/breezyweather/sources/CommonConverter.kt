@@ -1363,6 +1363,7 @@ fun completeCurrentFromSecondaryData(
     hourly: Hourly?,
     todayDaily: Daily?,
     currentAirQuality: AirQuality?,
+    precipitation: String?,
     location: Location
 ): Current {
     val newCurrent = initialCurrent ?: Current()
@@ -1416,7 +1417,8 @@ fun completeCurrentFromSecondaryData(
         dewPoint = newDewPoint,
         pressure = newCurrent.pressure ?: hourly.pressure,
         cloudCover = newCurrent.cloudCover ?: hourly.cloudCover,
-        visibility = newCurrent.visibility ?: hourly.visibility
+        visibility = newCurrent.visibility ?: hourly.visibility,
+        hourlyForecast = precipitation ?: newCurrent.hourlyForecast
     )
 }
 
